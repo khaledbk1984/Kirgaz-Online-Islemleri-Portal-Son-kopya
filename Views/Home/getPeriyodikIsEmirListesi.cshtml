@@ -1,0 +1,700 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+@{
+    ViewData["Title"] = "getPeriyodikIsEmirListesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link rel="stylesheet" href="~/Contents/plugins/fontawesome-free/css/all.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="~/Contents/plugins/daterangepicker/daterangepicker.css">
+<!-- overlayScrollbars -->
+<!-- Ionicons -->
+<!-- daterange picker -->
+<!-- iCheck for checkboxes and radio inputs -->
+<link rel="stylesheet" href="~/Contents/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+<!-- Bootstrap Color Picker -->
+<link rel="stylesheet" href="~/Contents/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+<!-- Tempusdominus Bbootstrap 4 -->
+<link rel="stylesheet" href="~/Contents/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+<!-- Select2 -->
+<link rel="stylesheet" href="~/Contents/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="~/Contents/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="~/Contents/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+<link rel="stylesheet" href="~/Contents/dist/css/adminlte.min.css">
+
+
+
+
+<!-- /.card-header -->
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Kurum Adı</label>
+                <select class="form-control select2" style="width: 100%;font-weight:bold">
+                    <option selected="selected">Kırıkkale</option>
+                </select>
+            </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Il Adı</label>
+                <select class="form-control select2" id="ilAdiSelect" style="width: 100%;font-weight:bold;">
+                    <option selected="selected">-------------------</option>
+                    <option>Kırıkkale</option>
+
+                </select>
+            </div>
+
+        </div>
+        <div class="col-md-2">
+
+            <div class="form-group">
+                <label>Bölge Adı</label>
+                <select class="form-control select2" id="bolgeSelector" style="width: 100%;font-weight:bold;">
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Ilçe Adı </label>
+                <select class="form-control select2" id="ilceAdiSelector" style="width: 100%;font-weight:bold;">
+                </select>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- /.yenı satır -->
+    <div class="row">
+
+        <!-- /.col -->
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Mahalle Adı</label>
+                <select id="mahalleAdiSelector" class="form-control select2" style="width: 100%;font-weight:bold">
+                </select>
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Cad/Sok Adı</label>
+                <select id="sokakAdiSelector" class="form-control select2" style="width: 100%;font-weight:bold">
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            
+            <label>Zaman Aralığı Giriniz</label>
+
+                
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+
+                    <input type="text" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="dd/mm/yyyy-dd/mm/yyyy" data-mask>
+                </div>
+
+           
+
+           
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="form-group">
+                <label>Zaman Aralığı Seçiniz</label>
+
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="far fa-calendar-alt"></i>
+                        </span>
+                    </div>
+                    
+                    <input type="text" id="zamanAraligi" placeholder="DD / MM / YYYY" class="form-control float-right" >
+                </div>
+                <!-- /.input group -->
+            </div>
+
+        </div>
+
+
+       
+
+    </div>
+
+
+
+    <!-- /.yenı satır -->
+    <div class="row">
+
+        <!-- /.col -->
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Is Emri Durum</label>
+                <select id="IsEmriDurumSelector" class="form-control select2" style="width: 100%;font-weight:bold">
+                    <option>Yeni Is</option>
+                    <option>Adres Kapalı</option>
+                    <option>Tamamlandı</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Araç Plaka</label>
+                <select id="AracPlakaSelector" class="form-control select2" style="width: 100%;font-weight:bold">
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Is Emri Yıl</label>
+                <input type="text" id="IsEmriYıl" class="form-control" placeholder="Is Emri Yıl Giriniz ...">
+            </div>
+
+
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Bina ID</label>
+                <input type="text" id="binaID" class="form-control" placeholder="Bina Idsi Giriniz ...">
+            </div>
+            </div>
+
+
+
+        </div>
+        <!-- /.yenı satır -->
+        <div class="row">
+
+
+
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+
+
+<!-- /.yenı satır -->
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+
+        </div>
+
+    </div>
+
+    <div class="col-md-2">
+
+
+
+        <div class="form-group">
+
+            <!-- /.input group -->
+        </div>
+
+    </div>
+
+
+
+
+    <div class="col-md-2">
+
+
+
+
+
+    </div>
+    <div class="col-md-2">
+
+
+    </div>
+    <div class="col-md-2">
+
+
+        <div class='input-group date'>
+            <button id="btnSorgula" type="button" class="btn btn-block btn-primary">SORGULA</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card-body">
+    <table id="periodikListeTablosu" class="table table-bordered table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Abone Id</th>
+                <th>ADI Soyadı</th>
+                <th>Sökülen Sayaç No </th>
+                <th>Sökülen Sayaç Türü</th>
+                <th>Takılan Sayaç No</th>
+                <th>Ise Baslama Tarihi</th>
+                <th>Isi Bitirme Tarihi</th>
+
+                <th>Ekip Kodu</th>
+                <th>Personel</th>
+                <th>Plaka</th>
+                <th>Bildirim No</th>
+                <th>Ilce</th>
+                <th>Bildirim No</th>
+                <th>Bina Id</th>
+                <th>Durumu</th>
+            </tr>
+        </thead>
+
+        @*<tfoot>
+                <tr>
+                    <th>Rendering engine</th>
+                    <th>Browser</th>
+                    <th>Platform(s)</th>
+                    <th>Engine version</th>
+                    <th>CSS grade</th>
+                </tr>
+            </tfoot>*@
+    </table>
+</div>
+
+<script src="~/Contents/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/Contents/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Select2 -->
+<script src="~/Contents/plugins/select2/js/select2.full.min.js"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="~/Contents/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+<!-- InputMask -->
+<script src="~/Contents/plugins/moment/moment.min.js"></script>
+<script src="~/Contents/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+<!-- date-range-picker -->
+<script src="~/Contents/plugins/daterangepicker/daterangepicker.js"></script>
+<!-- bootstrap color picker -->
+<script src="~/Contents/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="~/Contents/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Bootstrap Switch -->
+<script src="~/Contents/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+<!-- AdminLTE App -->
+<script src="~/Contents/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="~/Contents/dist/js/demo.js"></script>
+
+<script>
+    $(function () {
+
+        //il adi selector
+        $('#ilAdiSelect').on("change", function () {
+            if ($('#ilAdiSelect').val() != '-------------------') {
+
+                AjaxCall('/PeriyodikMuayene/getBolgeList', null).done(function (response) {
+
+                    if (response.length > 0) {
+                        //console.log("############################url: : " + JSON.stringify(response));
+                        var myArr = JSON.parse(JSON.stringify(response));
+                        $('#bolgeSelector').html('');
+                        var options = '';
+                        options += '<option value="Bölge Adı Seçiniz">Bölge Adı Seçiniz...</option>';
+                        for (var i = 0; i < myArr.length; i++) {
+                            var ob = JSON.parse(JSON.stringify(myArr[i]));
+                            //console.log("############################url: : " + i+"  "+JSON.stringify(ob.BOLGE_ADI));
+                            //var bolge=JSON.stringify(ob.BOLGE_ADI).replace("\"","");
+                            options += '<option value=' + JSON.stringify(ob.BOLGE_KODU).replaceAll("\"", "") + "-" + JSON.stringify(ob.BOLGE_ADI).replaceAll("\"", "") + '>' +
+                                JSON.stringify(ob.BOLGE_KODU).replaceAll("\"", "") + "-" + JSON.stringify(ob.BOLGE_ADI).replaceAll("\"", "") + '</option>';
+                        }
+                        $('#bolgeSelector').append(options);
+
+                    }
+                }).fail(function (error) {
+                    alert(error.StatusText);
+                });
+            } else {
+                $('#mahalleAdiSelector').empty();
+                $('#sokakAdiSelector').empty();
+                $('#bolgeSelector').empty();
+                $('#ilceAdiSelector').empty();
+
+            }
+        });
+
+
+
+        //Bolgeler selector
+        $('#bolgeSelector').on("change", function () {
+
+            var bolgeAdi = $('#bolgeSelector').val();
+            console.log("############################url: : " + "  " + bolgeAdi);
+
+            if (bolgeAdi != "Bölge Adı Seçiniz") {
+                //$('#ilAdiSelect').on("change", function () {
+                var ilAdi = $('#ilAdiSelect').val();
+                var obj = { bolgeAdi: bolgeAdi, ilAdi: ilAdi };
+                console.log("############################url: : " + bolgeAdi + "   ");
+                $.ajax({
+                    type: 'POST',
+                    url: '/PeriyodikMuayene/getIlceListesi',
+
+
+                    data: obj,
+
+                    dataType: 'json',
+                    success: function (data) {
+                        //alert(JSON.stringify(data));
+                        $('#ilceAdiSelector').html('');
+                        var cevap = JSON.parse(JSON.stringify(data));
+                        var options = '';
+                        options += '<option value="İlçe Adı Seçiniz">İlçe Adı Seçiniz...</option>';
+                        for (var i = 0; i < cevap.length; i++) {
+                            var birIlceData = JSON.parse(JSON.stringify(cevap[i]));
+                            console.log("############################url: : " + i + "  " + JSON.stringify(birIlceData.ILCE_ADI));
+                            //var bolge=JSON.stringify(ob.BOLGE_ADI).replace("\"","");
+                            options += '<option value=' + JSON.stringify(birIlceData.ILCE_ADI).replace("\"", "").replace("\"", "") + '>' +
+                                JSON.stringify(birIlceData.ILCE_ADI).replace("\"", "").replace("\"", "") + '</option>';
+                        }
+                        $('#ilceAdiSelector').append(options);
+                    },
+                    failure: function (errMsg) {
+                        alert(errMsg);
+                    }
+                });
+            } else {
+                $('#ilceAdiSelector').empty();
+                $('#mahalleAdiSelector').empty();
+                $('#sokakAdiSelector').empty();
+            }
+            //});
+
+        });
+
+
+
+        //Ilceler selector
+        $('#ilceAdiSelector').on("change", function () {
+
+            var ilceAdi = $('#ilceAdiSelector').val();
+            console.log("############################url: : " + "  " + ilceAdi);
+
+            if (ilceAdi != "İlçe Adı Seçiniz") {
+                //$('#ilAdiSelect').on("change", function () {
+                var ilAdi = $('#ilAdiSelect').val();
+                var bolgeAdi = $('#bolgeSelector').val();
+
+                var obj = { bolgeAdi: bolgeAdi, ilAdi: ilAdi, ilceAdi: ilceAdi };
+                console.log("############################url: : " + bolgeAdi + "   ");
+                $.ajax({
+                    type: 'POST',
+                    url: '/PeriyodikMuayene/getMahalleListesi',
+
+
+                    data: obj,
+
+                    dataType: 'json',
+                    success: function (data) {
+                        //alert(JSON.stringify(data));
+                        $('#mahalleAdiSelector').html('');
+                        var cevap = JSON.parse(JSON.stringify(data));
+                        var options = '';
+                        options += '<option value="Mahalle Adı Seçiniz">Mahalle Adı Seçiniz...</option>';
+                        for (var i = 0; i < cevap.length; i++) {
+                            var birMahalleData = JSON.parse(JSON.stringify(cevap[i]));
+                            console.log("############################url: : " + i + "  " + JSON.stringify(birMahalleData.MAHALLE_ADI));
+                            //var bolge=JSON.stringify(ob.BOLGE_ADI).replace("\"","");
+                            options += '<option value=' + JSON.stringify(birMahalleData.MAHALLE_ADI).replace("\"", "").replace("\"", "") + '>' +
+                                JSON.stringify(birMahalleData.MAHALLE_ADI).replace("\"", "").replace("\"", "") + '</option>';
+                        }
+                        $('#mahalleAdiSelector').append(options);
+                    },
+                    failure: function (errMsg) {
+                        alert(errMsg);
+                    }
+                });
+            } else {
+                $('#mahalleAdiSelector').empty();
+                $('#sokakAdiSelector').empty();
+            }
+            //});
+
+        });
+
+
+        //Ilceler selector
+        $('#mahalleAdiSelector').on("change", function () {
+
+            var mahalleAdi = $('#mahalleAdiSelector').val();
+
+            if (mahalleAdi != "Mahalle Adı Seçiniz") {
+                //$('#ilAdiSelect').on("change", function () {
+                var ilAdi = $('#ilAdiSelect').val();
+                var bolgeAdi = $('#bolgeSelector').val();
+                var ilceAdi = $('#ilceAdiSelector').val();
+                console.log("############################url: : " + "  " + mahalleAdi + "  " + ilAdi + "  " + bolgeAdi + "  " + ilceAdi);
+
+                var obj = { bolgeAdi: bolgeAdi, ilAdi: ilAdi, ilceAdi: ilceAdi, mahalleAdi: mahalleAdi };
+                //console.log("############################url: : " + bolgeAdi+"   ");
+                $.ajax({
+                    type: 'POST',
+                    url: '/PeriyodikMuayene/getSokakListesi',
+
+
+                    data: obj,
+
+                    dataType: 'json',
+                    success: function (data) {
+                        //alert(JSON.stringify(data));
+                        $('#sokakAdiSelector').html('');
+                        var cevap = JSON.parse(JSON.stringify(data));
+                        var options = '';
+                        options += '<option value="Sokak Adı Seçiniz">Sokak Adı Seçiniz...</option>';
+                        for (var i = 0; i < cevap.length; i++) {
+                            var birSokakData = JSON.parse(JSON.stringify(cevap[i]));
+                            console.log("############################url: : " + i + "  " + JSON.stringify(birSokakData.CADDE_SOKAK_ADI));
+                            //var bolge=JSON.stringify(ob.BOLGE_ADI).replace("\"","");
+                            options += '<option value=' + JSON.stringify(birSokakData.CADDE_SOKAK_ADI).replace("\"", "").replace("\"", "") + '>' +
+                                JSON.stringify(birSokakData.CADDE_SOKAK_ADI).replace("\"", "").replace("\"", "") + '</option>';
+                        }
+                        $('#sokakAdiSelector').append(options);
+                    },
+                    failure: function (errMsg) {
+                        alert(errMsg);
+                    }
+                });
+            } else {
+                $('#sokakAdiSelector').empty();
+            }
+            //});
+
+        });
+
+
+
+
+    });
+
+    AjaxCall('/PeriyodikMuayene/getAracPlakaLsistesi', null).done(function (response) {
+
+        if (response.length > 0) {
+            // console.log("############################url: : " + JSON.stringify(response));
+            var myArr = JSON.parse(JSON.stringify(response));
+            $('#AracPlakaSelector').html('');
+            var options = '';
+            options += '<option value="Plaka No Seçiniz">Plaka No Seçiniz...</option>';
+            for (var i = 0; i < myArr.length; i++) {
+                var ob = JSON.parse(JSON.stringify(myArr[i]));
+                // console.log("############################url: : " + i + "  " + JSON.stringify(ob.PLAKA));
+                //var bolge=JSON.stringify(ob.BOLGE_ADI).replace("\"","");
+                options += '<option value=' + JSON.stringify(ob.PLAKA).replaceAll("\"", "") + '>' +
+                    JSON.stringify(ob.PLAKA).replaceAll("\"", "") + '</option>';
+            }
+            $('#AracPlakaSelector').append(options);
+
+        }
+    }).fail(function (error) {
+        alert(error.StatusText);
+    });
+
+
+    String.prototype.replaceAll = function (stringFind, stringReplace) {
+        var ex = new RegExp(stringFind.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1"), "g");
+        return this.replace(ex, stringReplace);
+    };
+
+    function AjaxCall(url, data, type) {
+        return $.ajax({
+            url: url,
+            type: type ? type : 'GET',
+            data: data,
+            contentType: 'application/json'
+        });
+    }
+
+
+
+    $("#btnSorgula").click(function () {
+        var ilAdi = $('#ilAdiSelect').val();
+        var bolgeAdi = $('#bolgeSelector').val();
+
+        var ilceAdi = $('#ilceAdiSelector').val();
+
+        var ilceAdi = $('#ilceAdiSelector').val();
+        var mahalleAdi = $('#mahalleAdiSelector').val();
+        var zamanAraligi = $('#zamanAraligi').val();
+        var sokakAdiSelector = $('#sokakAdiSelector').val();
+        var binaID = $('#binaID').val();
+        var IsEmriDurumSelector = $('#IsEmriDurumSelector').val();
+        var AracPlakaSelector = $('#AracPlakaSelector').val();
+        var IsEmriYıl = $('#IsEmriYıl').val();
+        console.log("############################url: : " + "  " + mahalleAdi + "  " + ilAdi + "  " + bolgeAdi + "  " + ilceAdi);
+
+        var obj = { bolgeAdi: bolgeAdi, ilAdi: ilAdi, ilceAdi: ilceAdi, mahalleAdi: mahalleAdi };
+        $.ajax({
+            type: 'POST',
+            url: '/PeriyodikMuayene/getPeriyodikIsEmirListesi',
+
+
+            data: obj,
+
+            dataType: 'json',
+            success: function (data) {
+                console.log("############################url: : " + JSON.stringify(data));
+                $('#periodikListeTablosu tr').remove();
+                $('#periodikListeTablosu tbody').append("<tr><th>Abone Id</th><th>ADI Soyadı</th><th>Sökülen Sayaç No </th><th>Sökülen Sayaç Türü</th> <th>Takılan Sayaç No</th><th>Ise Baslama Tarihi</th><th>Isi Bitirme Tarihi</th> <th>Ekip Kodu</th><th>Personel</th><th>Plaka</th><th>Bildirim No</th><th>Ilce</th><th>Bildirim No</th><th>Bina Id</th><th>Durumu</th><th>Detay</th></tr>");
+
+
+                $.each(data, function (i, v) {
+
+                    console.log("############################url: : " + "  " + v.ABONE_NO + "  " + v.SAYAC_TURU);
+
+
+                    $('#periodikListeTablosu tbody').append('<tr><td>' + v.ABONE_ID + '</td><td>' + v.ABONE_ADI + ' ' + v.ABONE_SOYADI + '</td><td>' + v.SAYAC_NO + '</td><td>' + v.SAYAC_TURU + '</td><td>' + v.TAKILAN_SAYAC_NO + '</td><td>' + v.ISE_BASLAMA_TARIHI + '</td><td>' + v.ISI_BITIRME_TARIHI + '</td><td>' + v.EKIP_KODU + '</td><td>' + v.EKIP_PERSONEL_1 + '</td><td>' + v.PLAKA + '</td><td>' + v.BILDIRIM_NO + '</td><td>' + v.ILCE + '</td><td>' + v.MAHALLE + '</td><td>' + v.BINA_ID + '</td><td>' + v.DURUMU + '</td> <td class="text-center">  <div class="btn-group">'+
+
+                    //'<button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">'+
+                    //   ' <span class="sr-only">Toggle Dropdown</span>'+
+                    //    '<div class="dropdown-menu" role="menu">'+
+                    //    //'<a class="dropdown-item" href=@Url.Action("getFotografBilgisi" , "PeriyodikMuayene", new { aboneNo = "-1" })>Fotograf</a>'.replace("-1", v.ABONE_ID)+
+                        //   ' <a class="dropdown-item" href="#">Harita</a>'+
+        //                //   @* '<div class="dropdown-divider"></div>'+
+                           ' <a class="dropdown-item" href="#">Separated link</a>'+*@
+        //              '  </div>'+
+        //           '</button>'+
+        //'</div ></td></tr>'
+                        '<div class="btn-group">'+
+                            '<button class="btn btn-primary btn-lg dropdown-toggle dropdown-toggle-split" type="button" data-toggle="dropdown">'+
+                            '</button>'+
+                           ' <div class="dropdown-menu">'+
+                        '<a class="dropdown-item" href="/PeriyodikMuayene/getFotografBilgisi?aboneNo='+v.ABONE_ID+'">Fotograf</a>'+
+                                '<a class="dropdown-item" href="#">Harita</a>'+
+                           ' </div>'+
+                       ' </div>');
+
+
+
+                });
+
+
+            },
+            failure: function (errMsg) {
+                alert(errMsg);
+
+
+            }
+
+        });
+    });
+
+
+    $(function () {
+        $('#periodikListeTablosu').DataTable({
+            "paging": false,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": false,
+            "info": false,
+            "autoWidth": true,
+        });
+    });
+
+
+    //Zaman picker
+    $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+
+        //Datemask dd/mm/yyyy
+        $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+        //Datemask2 mm/dd/yyyy
+        $('#datemask2').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+        //Money Euro
+        $('[data-mask]').inputmask()
+
+        //Date range picker
+        $('#zamanAraligi').daterangepicker()
+        //Date range picker with time picker
+        $('#reservationtime').daterangepicker({
+            timePicker: true,
+            timePickerIncrement: 30,
+            locale: {
+                format: 'DD/MM/YYYY hh:mm A'
+            }
+        })
+        //Date range as a button
+        $('#daterange-btn').daterangepicker(
+            {
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                startDate: moment().subtract(29, 'days'),
+                endDate: moment()
+            },
+            function (start, end) {
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+            }
+        )
+
+        //Timepicker
+        $('#timepicker').datetimepicker({
+            format: 'LT'
+        })
+
+        //Bootstrap Duallistbox
+        $('.duallistbox').bootstrapDualListbox()
+
+        //Colorpicker
+        $('.my-colorpicker1').colorpicker()
+        //color picker with addon
+        $('.my-colorpicker2').colorpicker()
+
+        $('.my-colorpicker2').on('colorpickerChange', function (event) {
+            $('.my-colorpicker2 .fa-square').css('color', event.color.toString());
+        });
+
+        $("input[data-bootstrap-switch]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        });
+
+    })
+</script>
+
+@*<script src="~/Contents/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>*@
+
+
+<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
+<link rel="stylesheet" href="~/Contents/css/SplitButtonStyle.css">
+
+
+
+@*<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js'></script>
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>*@
+@*<script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js'></script>*@

@@ -1,0 +1,59 @@
+﻿
+@using Kirgaz_Online_Islemleri_Portal_Son_kopya.Models
+@model IEnumerable<Kirgaz_Online_Islemleri_Portal_Son_kopya.Models.ImageModel>
+@{
+    ViewBag.Title = "getFotografBilgisi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>İş Emir Detayları</title>
+<!-- Tell the browser to be responsive to screen width -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Ekko Lightbox -->
+<link rel="stylesheet" href="~/Contents/plugins/ekko-lightbox/ekko-lightbox.css">
+
+
+
+<div class="col-12">
+    <div class="card card-primary">
+        <div class="card-header">
+            <div class="card-title">
+                Gönderilen Fotograf
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                
+                    <img class="img-fluid" alt="Responsive image" src="@ViewBag.ImageData" />
+
+               
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Contents/plugins/jquery-ui/jquery-ui.min.js"></script>
+ 
+<script src="~/Contents/plugins/ekko-lightbox/ekko-lightbox.min.js"></script>
+<!-- AdminLTE App -->
+<!-- AdminLTE for demo purposes -->
+<!-- Filterizr-->
+<script src="~/Contents/plugins/filterizr/jquery.filterizr.min.js"></script>
+<!-- Page specific script -->
+<script>$(function () {
+    $(document).on('click', '[data-toggle="lightbox"]', function(event) {
+      event.preventDefault();
+      $(this).ekkoLightbox({
+        alwaysShowClose: true
+      });
+    });
+
+    $('.filter-container').filterizr({gutterPixels: 3});
+    $('.btn[data-filter]').on('click', function() {
+      $('.btn[data-filter]').removeClass('active');
+      $(this).addClass('active');
+    });
+  })</script>

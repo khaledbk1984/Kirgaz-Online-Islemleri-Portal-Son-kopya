@@ -1,0 +1,308 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+@{
+    ViewData["Title"] = "UsulsuzGazList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Includes {
+
+    <!-- Theme JS files -->
+    <script type="text/javascript" src="~/Scripts/plugins/tables/datatables/extensions/jszip/jszip.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/plugins/tables/datatables/datatables.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/plugins/tables/datatables/extensions/buttons.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/plugins/forms/selects/select2.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/plugins/notifications/sweet_alert.min.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/pages/datatables_extension_buttons_init.js"></script>
+
+
+    <!-- /theme JS files -->
+    <!--   TARİH İÇİN GEREKLİ (MASK) -->
+    <script type="text/javascript" src="~/Scripts/core/libraries/jasny_bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/plugins/ui/ripple.min.js"></script>
+
+
+    <!-- <script type="text/javascript" src="/Scripts/plugins/ui/ripple.min.js"></script> -->
+    @*<script type="text/javascript" src="~/Scripts/plugins/tables/datatables/datatables.min.js"></script>
+        <script type="text/javascript" src="~/Scripts/plugins/forms/selects/select2.min.js"></script>
+        <script type="text/javascript" src="~/Scripts/plugins/tables/datatables/extensions/natural_sort.js"></script>
+        <script type="text/javascript" src="~/Scripts/pages/datatables_advanced.js"></script>
+        <link href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">*@
+}
+<!-- Main content -->
+<div class="content-wrapper">
+
+    <!-- Page header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title">
+                <h4><i class="icon-arrow-left52 position-left"></i> <span class="text-semibold">İş Emirleri</span> - Usulsüz Doğal Gaz Kullanımı</h4>
+            </div>
+
+            <div class="heading-elements">
+                <!--
+                <div class="heading-btn-group">
+                    <a href="#" class="btn btn-link btn-float text-size-small has-text"><i class="icon-bars-alt text-primary"></i><span>İstatistikler</span></a>
+                </div>
+                -->
+            </div>
+        </div>
+
+        @using (Html.BeginForm("UsulsuzGazList", "Home"))
+        {
+            @Html.AntiForgeryToken()
+            <!-- Sorgulama  -->
+            <div class="breadcrumb-line breadcrumb-line-component">
+                <ul class="breadcrumb">
+
+                    <li class="active">Usulsüz Doğal Gaz Kullanımı</li>
+                </ul>
+                <!--
+                <ul class="breadcrumb-elements">
+                    <li><a href="#"><i class="icon-comment-discussion position-left"></i> Yardım</a></li>
+                </ul>
+                -->
+
+                <div class="col-md-1">
+
+                </div>
+                <div class="col-md-2">
+                    <div class="row">
+                        <label> </label>
+                    </div>
+                    <div class="row">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <!--   <div class="breadcrumb-line breadcrumb-line-component form-group" > -->
+                    <div class="row">
+                        <label> </label>
+                    </div>
+                    <div class="row">
+                        <label>  İş Emri Durumu: </label>
+                        <select class="select" name="cbIsEmriUGKTTList">
+                            <optgroup label="Tüm İş Emirleri">
+                                <option value="0">Tümü</option>
+                            </optgroup>
+                            <optgroup label="Yeni ve Devam Eden İş Emirleri">
+                                <option value="1">Yeni İş</option>
+                                <option value="2">Devam Ediyor</option>
+                                <option value="5">Durduruldu</option>
+                                <option value="4">Tamamlanmadı</option>
+                            </optgroup>
+                            <optgroup label="Biten Emirleri">
+                                <option value="3">Tamamlandı</option>
+                                <option value="6">Ödendi</option>
+                                <option value="7">Sonlandırıldı</option>
+                                <option value="8">İptal</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="row">
+                        <label> </label>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="SORGULA" class="btn btn-primary" />
+                    </div>
+                </div>
+
+            </div>
+            <!-- Sorgulama   Bitti -->
+        }
+
+    </div>
+    <!-- /page header -->
+    <!-- Content area -->
+    <div class="content">
+
+        <!-- Page length options -->
+        <div class="panel panel-flat">
+            <!-- Page length options -->
+            <div class="panel panel-flat">
+
+                <table id="example" class="table datatable-button-init-basic">
+                    <thead>
+                        <tr>
+                            <th>Abone No</th>
+                            <th>Abone Adı Soyadı</th>
+                            <th>Sayaç No</th>
+                            <th>Kapatma Tarihi</th>
+                            <th>Oluşturma Tarihi</th>
+                            <th>İlçe Adı</th>
+                            <th>Mahalle Adı</th>
+                            <th>BINA ID</th>       <!-- row : 7  -->
+                            <th class="text-center">İşlemler</th>
+                            <th>Seçenekler</th>
+                            @*<th hidden>Durum</th>  <!-- row : 8  -->
+                                <th hidden>ID</th>     <!-- row : 9  -->*@
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <!-- <td style="display:none;">    -->
+
+                        @foreach (DataRow row in Model.Rows)
+                        {
+                            <tr>
+                                @foreach (DataColumn col in Model.Columns)
+                                {
+                                    var DurumId = row[8].ToString();
+                                    var KolonAdi = col.ToString();
+                                    var veri = @row[col.ColumnName].ToString();
+
+                                    <!--
+                                        if (KolonAdi != "DURUMU")
+                                        <td>@row[col.ColumnName]</td>
+                                    -->
+
+                                    if (KolonAdi == "ABONE_ID")
+                                    {
+                                        <td> @row[col.ColumnName]</td>
+                                    }
+
+                                    if (KolonAdi == "ABONE_AD_SOYAD")
+                                    {
+                                        <td> @row[col.ColumnName]</td>
+                                    }
+
+                                    if (KolonAdi == "SAYAC_NO")
+                                    {
+                                        <td> @row[col.ColumnName]</td>
+                                    }
+
+                                    if (KolonAdi == "KAPATMA_TARIHI")
+                                    {
+                                        <td> @row[col.ColumnName]</td>
+                                    }
+
+                                    if (KolonAdi == "CREATED_DATE")
+                                    {
+                                        <td> @row[col.ColumnName]</td>
+                                    }
+
+                                    if (KolonAdi == "ILCE_ADI")
+                                    {
+                                        <td> @row[col.ColumnName]</td>
+                                    }
+
+                                    if (KolonAdi == "MAHALLE_ADI")
+                                    {
+                                        <td> @row[col.ColumnName]</td>
+                                    }
+
+                                    if (KolonAdi == "BINA_ID")
+                                    {
+                                        <td> @row[col.ColumnName]</td>
+                                    }
+
+                                    if (KolonAdi == "DURUMU")
+                                    {
+                                        if (DurumId == "1")
+                                        {
+                                            <td><span class="label label-default">Yeni İş</span></td>
+                                        }
+                                        if (DurumId == "2")
+                                        {
+                                            <td><span class="label label-primary">Devam Ediyor</span></td>
+                                        }
+                                        if (DurumId == "3")
+                                        {
+                                            <td><span class="label label-success">Tamamlandı</span></td>
+                                        }
+                                        if (DurumId == "4")
+                                        {
+                                            <td><span class="label label-warning">Tamamlanmadı</span></td>
+                                        }
+                                        if (DurumId == "5")
+                                        {
+                                            <td><span class="label label-info">Durduruldu</span></td>
+                                        }
+                                        if (DurumId == "6")
+                                        {
+                                            <td><span class="label label-success">Ödendi</span></td>
+                                        }
+                                        if (DurumId == "7")
+                                        {
+                                            <td><span class="label label-success">Sonlandırıldı</span></td>
+                                        }
+                                        if (DurumId == "8")
+                                        {
+                                            <td><span class="label label-danger">İptal</span></td>
+                                        }
+                                        if (DurumId == "9")
+                                        {
+                                            <td><span class="label label-primary">Ertelendi</span></td>
+                                        }
+                                        if (DurumId == "10")
+                                        {
+                                            <td><span class="label label-danger">İşlem Yapılmadı</span></td>
+                                        }
+                                        if (DurumId == "99")
+                                        {
+                                            <td><span class="label label-danger">KAYIT BULUNAMADI</span></td>
+                                        }
+                                    }
+
+                                    @*if (KolonAdi == "DURUMU")
+                                        {
+                                            <td style="display:none;"> @row[col.ColumnName]</td>
+                                        }
+
+                                        if (KolonAdi == "USULSUZ_KUL_ID")
+                                        {
+                                            <td style="display:none;"> @row[col.ColumnName]</td>
+                                        }*@
+
+                                }
+                                <td class="text-center">
+                                    <ul class="icons-list">
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                                <i class="icon-menu9"></i>
+                                            </a>
+
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                <li><a href="/Home/UsulsuzGazDetay?id=@row[9].ToString()"><i class="glyphicon glyphicon-plus"></i>Detay</a></li>
+                                                @if (@ViewBag.IL_Harita == "KIRIKKALE")
+                                                {
+                                                    <li><a href="/Home/Harita?is_id=#@row[7].ToString()"><i class="glyphicon glyphicon-map-marker"></i>Harita</a></li>
+                                                }
+                                                @if (@ViewBag.IL_Harita == "KIRSEHIR")
+                                                {
+                                                    <li><a href="/Home/Harita40?is_id=#@row[7].ToString()"><i class="glyphicon glyphicon-map-marker"></i>Harita</a></li>
+                                                }
+                                                <li><a href="/Home/FotoDetay?idm=@row[9].ToString()&IsEmriID=5"><i class="glyphicon glyphicon-camera"></i>Fotoğraf</a></li>
+
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /page length options -->
+        </div>
+        <!-- /page length options -->
+        <!-- Footer -->
+        <div class="footer text-muted">
+            &copy; 2017. KIRGAZ
+        </div>
+        <!-- /footer -->
+    </div>
+    <!-- /content area -->
+</div>
+<!-- /main content -->

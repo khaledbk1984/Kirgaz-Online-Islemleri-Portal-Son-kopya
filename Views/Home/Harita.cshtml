@@ -1,0 +1,1744 @@
+﻿
+@using System.Web.Optimization;
+@{
+    ViewData["Title"] = "Harita";
+    Layout = "~/Views/Shared/_HaritaLayout.cshtml";
+}
+@section Includes {
+
+
+    <script type="text/javascript" src="~/Content/js/core/libraries/jquery_ui/interactions.min.js"></script>
+    <script type="text/javascript" src="~/Content/js/plugins/forms/selects/select2.min.js"></script>
+
+    <script type="text/javascript" src="~/Content/js/pages/form_select2.js"></script>
+
+
+    <link href="~/Content/leafletjs/leaflet.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="~/Content/leafletjs/leaflet.js"></script>
+
+
+    <link href="~/Content/leafletjs/Control.Loading.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="~/Content/leafletjs/leaflet-tilelayer-wmts-src.js"></script>
+    <script type="text/javascript" src="~/Content/leafletjs/Control.Loading.js"></script>
+    <script type="text/javascript" src="~/Content/js/pages/components_navs.js"></script>
+    <script type="text/javascript" src="~/Content/js/core/libraries/jquery_ui/interactions.min.js"></script>
+    <script type="text/javascript" src="~/Content/js/core/libraries/jquery_ui/touch.min.js"></script>
+
+    <script type="text/javascript" src="~/Content/js/plugins/notifications/bootbox.min.js"></script>
+    <script type="text/javascript" src="~/Content/js/plugins/notifications/sweet_alert.min.js"></script>
+
+    <script type="text/javascript" src="~/Content/js/pages/components_modals.js"></script>
+
+    <!-- Basemapbar control sources -->
+    <link rel="stylesheet" href="~/Content/leafletjs/leaflet-control-basemapbar.css" />
+    <script src="~/Content/leafletjs/leaflet-control-basemapbar.js"></script>
+    <script type="text/javascript" src="~/Content/leafletjs/leaflet-tilelayer-bing.js"></script>
+
+    <!-- katman grup kontrol -->
+    <link rel="stylesheet" href="~/Content/leafletjs/leaflet.groupedlayercontrol.min.css" />
+    <script src="~/Content/leafletjs/leaflet.groupedlayercontrol.min.js"></script>
+
+
+    <script type="text/javascript" src="~/Content/leafletjs/leaflet.contextmenu.min.js"></script>
+    <link href="~/Content/leafletjs/leaflet.contextmenu.min.css" rel="stylesheet" type="text/css">
+    <script src="~/Scripts/xml2json.min.js"></script>
+    <script src="~/Scripts/terraformer-1.0.8.min.js"></script>
+    <script src="~/Scripts/terraformer-wkt-parser-1.1.2.min.js"></script>
+
+    <link href="~/Content/leafletjs/leaflet-ruler.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="~/Content/leafletjs/leaflet-ruler.js"></script>
+
+    <style type="text/css">
+        #map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+        }
+
+        #street-view {
+            width: 100%;
+            height: 800px;
+        }
+
+        #sorgu {
+            width: 100%;
+            height: 800px;
+        }
+    </style>
+
+}
+
+<!-- Main content -->
+<div class="content-wrapper">
+
+    <!-- Content area -->
+    <!-- Column ordering -->
+
+    <div class="row">
+        <div class="col-md-10 col-md-push-2">
+
+            <!-- Tabs with solid background -->
+
+
+            <div class="panel-body">
+                <div class="tabbable">
+                    <ul class="nav nav-tabs nav-tabs-solid">
+                        <li class="active"><a href="#solid-tab1" data-toggle="tab">Harita</a></li>
+                        <li><a href="#solid-tab2" data-toggle="tab">Google Sokak Görüntüsü</a></li>
+                        <li><a href="#solid-tab3" data-toggle="tab">Seçilen Bina Abone Sonuç Tablosu</a></li>
+                        <li><a href="#solid-tab4" data-toggle="tab">Seçilen Bina Müracaat Sonuç Tablosu</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="solid-tab1">
+                            <div id="map"></div>
+                        </div>
+
+                        <div class="tab-pane" id="solid-tab2">
+                            <div id="street-view"></div>
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- /tabs with solid background -->
+
+
+
+
+        </div>
+
+
+        <div class="col-md-2 col-md-pull-10">
+
+
+            <div class="panel-body">
+
+
+
+                <!-- Accordion with different panel styling -->
+
+                <div class="panel-group" id="accordion-styled">
+                    <div class="panel">
+                        <div class="panel-heading bg-danger-400">
+                            <h6 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion-styled" href="#accordion-styled-group1">Adres Arama</a>
+                            </h6>
+                        </div>
+                        <div id="accordion-styled-group1" class="panel-collapse collapse in">
+                            <div class="panel-body">
+
+
+                                <div class="form-group">
+                                    <select data-placeholder="İl Seçiniz..." id="iller" class="select-size-lg">
+                                        <option></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <select data-placeholder="İlçe Seçiniz..." id="ilceler" class="select-size-lg">
+                                        <option></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <select data-placeholder="Mahalle Seçiniz..." id="mahalleler" class="select-size-lg">
+                                        <option></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <select data-placeholder="Cadde/Sokak Seçiniz..." id="cadde" class="select-size-lg">
+                                        <option></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <select data-placeholder="Bina Seçiniz..." id="binalar" class="select-size-lg">
+                                        <option></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-heading bg-slate-400">
+                            <h6 class="panel-title">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion-styled" href="#accordion-styled-group5"> Yol Sorgula</a>
+                            </h6>
+                        </div>
+                        <div id="accordion-styled-group5" class="panel-collapse collapse">
+                            <div class="panel-body">
+
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="yol_sorgu" placeholder="Yol Adı">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <input type="submit" id="btn_yol_sorgu" value="SORGULA" class="btn bg-slate-300" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="panel">
+                        <div class="panel-heading bg-green-600">
+                            <h6 class="panel-title">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion-styled" href="#accordion-styled-group2"> Ada No Sorgula</a>
+                            </h6>
+                        </div>
+                        <div id="accordion-styled-group2" class="panel-collapse collapse">
+                            <div class="panel-body">
+
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="adaid_bel" placeholder="ADA NO">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+
+                                        <input type="submit" id="btn_adasorgu_bel" value="SORGULA" class="btn bg-green-400" />
+                                        <!--   <button type="submit" id="btn_parselsorgu" value="SORGULA" class="btn btn-primary"> <i class="icon-pin-alt"></i></button> -->
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-heading bg-teal">
+                            <h6 class="panel-title">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion-styled" href="#accordion-styled-group3">Kadastro Parseli Sorgula</a>
+                            </h6>
+                        </div>
+                        <div id="accordion-styled-group3" class="panel-collapse collapse">
+                            <div class="panel-body">
+
+                                <div class="form-group">
+                                    <select data-placeholder="İl Seçiniz..." id="illertkgm" class="select-size-lg">
+                                        <option></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <select data-placeholder="İlçe Seçiniz..." id="ilcelertkgm" class="select-size-lg">
+                                        <option></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <select data-placeholder="Mahalle Seçiniz..." id="mahallelertkgm" class="select-size-lg">
+                                        <option></option>
+                                    </select>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="adaid" placeholder="ADA">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="parselid" placeholder="PARSEL">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+
+                                        <input type="submit" id="btn_parselsorgu" value="SORGULA" class="btn bg-teal" />
+                                        <!--   <button type="submit" id="btn_parselsorgu" value="SORGULA" class="btn btn-primary"> <i class="icon-pin-alt"></i></button> -->
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-heading bg-primary">
+                            <h6 class="panel-title">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion-styled" href="#accordion-styled-group4">Abone Sorgulama</a>
+                            </h6>
+                        </div>
+                        <div id="accordion-styled-group4" class="panel-collapse collapse">
+                            <div class="panel-body">
+
+
+                                <div class="form-group">
+                                    <div class="col-lg-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="binaid" placeholder="BİNA ID">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <button type="submit" id="binasorgu" class="btn btn-primary"> <i class="icon-pin-alt"></i></button>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="abonesorgu" placeholder="ABONE NO">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <button type="submit" id="aboneid" class="btn btn-primary"> <i class="icon-pin-alt"></i></button>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="cepsorgu" placeholder="TELEFONU">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <button type="submit" id="cepid" class="btn btn-primary"> <i class="icon-pin-alt"></i></button>
+                                    <!--    <button type="submit" id="cepid2" class="btn btn-primary"> <i class="icon-arrow-right14 position-right"></i></button>
+                                    <button type="button" class="btn border-warning text-warning-600 btn-flat btn-icon"><i class="icon-pin-alt"></i></button>
+                                    <button type="button" class="btn btn-primary btn-icon"><i class="icon-menu7"></i></button>
+                                     -->
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="txttcsorgu" placeholder="TC NO">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <button type="submit" id="btntcid" class="btn btn-primary"> <i class="icon-pin-alt"></i></button>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="txtsayacsorgu" placeholder="SAYAÇ NO">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <button type="submit" id="btnsayacid" class="btn btn-primary"> <i class="icon-pin-alt"></i></button>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-lg-8">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="txtvanaNo" placeholder="VANA KONUM NO">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="text-right">
+                                    <button type="submit" id="btnvanaid" class="btn btn-primary"> <i class="icon-pin-alt"></i></button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /accordion with different panel styling -->
+
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <!-- /content area -->
+    <!-- /main content -->
+
+
+
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger-800 text-bold" id="exampleModalLabel">BİNA BİLGİSİ </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-violet-800 text-bold" id="info">
+                ...
+            </div>
+
+            <div class="modal-body text-violet-800 text-bold" id="info2">
+                ...
+            </div>
+
+            <div class="modal-body text-violet-800 text-bold" id="info3">
+                ...
+            </div>
+
+            <div class="modal-body text-violet-800 text-bold" id="info4">
+                ...
+            </div>
+
+            <div class="modal-body text-violet-800 text-bold" id="info5">
+                ...
+            </div>
+
+            <div class="modal-body text-violet-800 text-bold" id="info6">
+                ...
+            </div>
+
+            <div class="modal-body text-violet-800 text-bold" id="info7">
+                ...
+            </div>
+
+            <div class="modal-body text-violet-800 text-bold" id="info8">
+                ...
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">KAPAT</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Uyarı Bilgi -->
+<div class="modal fade" id="UyariModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger-800 text-bold" id="exampleModalLabel">UYARI </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-violet-800 text-bold" id="Uyarinfo1">
+                ...
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">KAPAT</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ada  -->
+<div class="modal fade" id="AdaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger-800 text-bold" id="exampleModalLabel">ADA BİLGİSİ </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="panel panel-flat">
+                <table id="adaGrid" class="table datatable-show-all">
+                    <thead>
+                        <tr>
+
+                            <th>İLÇE ADI</th>
+                            <th>İLÇE ADI (CBS)</th>
+                            <th>MAHALLE ADI</th>
+                            <th>HARİTA</th>
+                        </tr>
+                    <tbody></tbody>
+
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">KAPAT</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Yol  -->
+<div class="modal fade" id="YolModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger-800 text-bold" id="exampleModalLabel">YOL BİLGİSİ </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="panel panel-flat">
+                <table id="yolGrid" class="table datatable-show-all">
+                    <thead>
+                        <tr>
+
+                            <th>YOL ADI</th>
+                            <th>MAHALLE ADI</th>
+                            <th>YOL KODU</th>
+                            <th>HARİTA</th>
+                        </tr>
+                    <tbody></tbody>
+
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">KAPAT</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var panorama;
+
+    var mymap = L.map('map', {
+        center: new L.LatLng(39.8437, 33.5062),
+        zoom: 20,
+        minZoom: 6,
+        maxZoom: 22,
+        contextmenu: true,
+        contextmenuWidth: 140,
+        contextmenuItems: [{
+            text: 'Koordinat Göster',
+            callback: showCoordinates
+        }, {
+            text: 'Parsel Sorgu',
+            callback: parselSorguJSon
+        }, '-', {
+            text: 'Google Sokak',
+            callback: zoomIn
+        }, '-', {
+            text: 'Bina Bilgi',
+            callback: BinaSorgu
+        }, '-', {
+            text: 'Abone Sorgu',
+            callback: MSorgu
+        }, {
+            text: 'Müracaat Sorgu',
+            callback: MuracaatSorgu
+        }, {
+            text: 'Haritayı Temizle',
+            callback: Temizlik
+            //}, {
+            //    text: 'Cetvel',
+            //    callback: cetvel
+        }]
+    });
+    //mymap.options.maxZoom = 20;
+
+
+    function showCoordinates(e) {
+        alert(e.latlng);
+        console.log("############################url: : " + "https://geo71.kirgaz.com.tr/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=bina_sorgu&STYLES&LAYERS=bina_sorgu&INFO_FORMAT=application%2Fjson&FEATURE_COUNT=50&X=50&Y=50&SRS=EPSG%3A4326&WIDTH=101&HEIGHT=101&BBOX=" + (e.latlng.lng - one_block) + "%2C" + (e.latlng.lat - one_block) + "%2C" + (e.latlng.lng + one_block) + "%2C" + (e.latlng.lat + one_block) + "");
+        console.log("############################url: : " + "https://geo71.kirgaz.com.tr/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=bina_sorgu&STYLES&LAYERS=bina_sorgu&INFO_FORMAT=application%2Fjson&FEATURE_COUNT=50&X=50&Y=50&SRS=EPSG%3A4326&WIDTH=101&HEIGHT=101&BBOX=" + (e.latlng.lng - one_block) + "%2C" + (e.latlng.lat - one_block) + "%2C" + (e.latlng.lng + one_block) + "%2C" + (e.latlng.lat + one_block) + "");
+
+    }
+
+    function Temizlik(e) {
+        console.log("Temizlik");
+
+        if (markerbinaid != undefined) {
+            mymap.removeLayer(markerbinaid);
+        };
+        if (binaS != undefined) {
+            binaS.clearLayers();
+
+        };
+        if (binaAbn != undefined) {
+            binaAbn.clearLayers();
+        };
+        if (parsel != undefined) {
+            parsel.clearLayers();
+        };
+
+    }
+
+
+    var popup = L.popup();
+    var one_block = 0.00001;
+    var binaS = L.geoJson();
+    console.log("##############################################   " );
+    function BinaSorgu(e) {
+
+        $.ajax({
+            type: "GET",
+            url: "https://geo71.kirgaz.com.tr/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=bina_sorgu&STYLES&LAYERS=bina_sorgu&INFO_FORMAT=application%2Fjson&FEATURE_COUNT=50&X=50&Y=50&SRS=EPSG%3A4326&WIDTH=101&HEIGHT=101&BBOX=" + (e.latlng.lng - one_block) + "%2C" + (e.latlng.lat - one_block) + "%2C" + (e.latlng.lng + one_block) + "%2C" + (e.latlng.lat + one_block) + "",
+            //    url: "http://192.168.102.125:8080/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=bina_sorgu&STYLES&LAYERS=bina_sorgu&INFO_FORMAT=application%2Fjson&FEATURE_COUNT=50&X=50&Y=50&SRS=EPSG%3A4326&WIDTH=101&HEIGHT=101&BBOX=" + (e.latlng.lng - one_block) + "%2C" + (e.latlng.lat - one_block) + "%2C" + (e.latlng.lng + one_block) + "%2C" + (e.latlng.lat + one_block) + "",
+            dataType: "json",
+            success: function (response) {
+                //console.log(response);
+                if (binaS != undefined) {
+                    binaS.clearLayers();
+
+                };
+                if (binaAbn != undefined) {
+                    binaAbn.clearLayers();
+                };
+
+                binaS.addData(response);
+                binaS.addTo(mymap);
+
+                BINA_ID = response.features[0].properties.BINA_ID;
+                BINA_NO = response.features[0].properties.BINA_NO;
+                YAPI = response.features[0].properties.YAPI_DURUMU;
+                YOL = response.features[0].properties.CADDE_SOKAK_ADI;
+                BINA_ADI = response.features[0].properties.BINA_ADI;
+                MAH_ADI = response.features[0].properties.MAHALLE_ADI;
+                SHAT_DURUM = response.features[0].properties.SERVIS_HATTI_DURUMU; // SERVIS_HATTI_DURUMU
+                if (SHAT_DURUM == 1)
+                    SHAT_DURUM = "VAR";
+                else
+                    SHAT_DURUM = "YOK";
+
+                OZEL_DURUM = response.features[0].properties.OZEL_DURUM;
+                if (OZEL_DURUM == "DEST")
+                    OZEL_DURUM = "YIKILMIS BINA";
+                else if (OZEL_DURUM == "MEA")
+                    OZEL_DURUM = "BINANIN OLCUMU YAPILMAMIS (SANAL)";
+                else if (OZEL_DURUM == "CEZA")
+                    OZEL_DURUM = "CEZALI BINA";
+                else if (OZEL_DURUM == "REC")
+                    OZEL_DURUM = "KAYIT ENGELLENMIS";
+                else if (OZEL_DURUM == "PD")
+                    OZEL_DURUM = "PLAN DISI";
+                else if (OZEL_DURUM == "UOB")
+                    OZEL_DURUM = "UYGUN OLMAYAN BÖLGE";
+                else if (OZEL_DURUM == "GAZSIZ")
+                    OZEL_DURUM = "GAZSIZ";
+                else if (OZEL_DURUM == "CLOSE")
+                    OZEL_DURUM = "ABONELİK HİZMETİ KAPATILDI";
+                else
+                    OZEL_DURUM = "DİĞER";
+
+                if (BINA_ADI == null)
+                    BINA_ADI = "YOK";
+                console.log(BINA_ID);
+
+                $('#exampleModal').modal('toggle');
+                $('#info').text("Bina ID          : " + BINA_ID);
+                $('#info2').text("Bina No          : " + BINA_NO);
+                $('#info3').text("Bina Adı        : " + BINA_ADI);
+                $('#info4').text("Bina Yapı Durumu : " + YAPI);
+                $('#info5').text("Cadde Sokak Adı : " + YOL);
+                $('#info6').text("Mahalle Adı : " + MAH_ADI);
+                $('#info7').text("Servis Hattı Durumu : " + SHAT_DURUM);
+                $('#info8').text("Bina Özel Durum : " + OZEL_DURUM);
+
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                popup
+                    .setLatLng(e.latlng)
+                    .setContent("Hata Oluştu...")
+                    .openOn(mymap);
+            }
+        });
+
+    }
+
+    var popup = L.popup();
+    var one_block = 0.00001;
+    var binaAbn = L.geoJson();
+
+
+    function MSorgu(e) {
+
+        $.ajax({
+            type: "GET",
+
+            // KIRIKKALE   https://geo71.kirgaz.com.tr    http://192.168.102.125:8080
+
+            url: "https://geo71.kirgaz.com.tr/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=bina_sorgu&STYLES&LAYERS=bina_sorgu&INFO_FORMAT=application%2Fjson&FEATURE_COUNT=50&X=50&Y=50&SRS=EPSG%3A4326&WIDTH=101&HEIGHT=101&BBOX=" + (e.latlng.lng - one_block) + "%2C" + (e.latlng.lat - one_block) + "%2C" + (e.latlng.lng + one_block) + "%2C" + (e.latlng.lat + one_block) + "",
+            //   url: "http://192.168.102.125:8080/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=bina_sorgu&STYLES&LAYERS=bina_sorgu&INFO_FORMAT=application%2Fjson&FEATURE_COUNT=50&X=50&Y=50&SRS=EPSG%3A4326&WIDTH=101&HEIGHT=101&BBOX=" + (e.latlng.lng - one_block) + "%2C" + (e.latlng.lat - one_block) + "%2C" + (e.latlng.lng + one_block) + "%2C" + (e.latlng.lat + one_block) + "",
+            dataType: "json",
+            success: function (response) {
+                console.log("e.latlng.lng : " + e.latlng.lng + "e.latlng.lat : " + e.latlng.lat + "e.latlng :" + e.latlng);
+
+                if (binaAbn != undefined) {
+                    binaAbn.clearLayers();
+                };
+                if (binaS != undefined) {
+                    binaS.clearLayers();
+                    // console.log("SİL..")
+                };
+
+                binaAbn.addData(response);
+                binaAbn.addTo(mymap);
+
+                BINA_ID = response.features[0].properties.BINA_ID;
+                ABONE = response.features[0].properties.ABONE;
+                YAPI = response.features[0].properties.YAPI_DURUMU;
+                IL_KODU = response.features[0].properties.IL_KODU;
+                console.log("Bina ID : " + BINA_ID + " İL KODU : " + IL_KODU);
+
+                popup
+                    .setLatLng(e.latlng)
+                    .setContent("BINA ID: " + BINA_ID + "<br/>ABONE: " + ABONE + "<br/>YAPI DURUMU: " + YAPI)
+                    .openOn(mymap);
+
+                $(document).ready(function () {
+                    //console.log('/Harita/muracaat_result?bn_id=' + BINA_ID)
+                    console.log('/Harita/muracaat_result?bn_id=' + BINA_ID + '&il_kod=' + IL_KODU)
+                    $.post('/Harita/muracaat_result?bn_id=' + BINA_ID + '&il_kod=' + IL_KODU, {}, function (data) {
+                        $('#muracaatGrid tr').remove();
+                        $('#muracaatGrid tbody').append("<tr><td><b>BINA ID :</td><td><b>" + BINA_ID + "</td> </tr>");
+                        $('#muracaatGrid tbody').append("<tr><td><b>ABONE NO</td><td><b>ABONE ADI</td><td><b>ABONE SOYADI</td><td><b>DAİRE NO</td><td><b>TELEFON NO</td><td><b>SAYAC NO</td><td><b>ABONELİK DURUMU</td></tr>");
+                        $.each(data, function (i, v) {
+                            $('#muracaatGrid tbody').append("<tr><td>" + v.ABONE_NO + "</td><td>" + v.ABONE_ADI + "</td><td>" + v.ABONE_SOYADI + "</td><td>" + v.DAIRE_NO + "</td><td>" + v.TELEFON_NO + "</td><td>" + v.SAYAC_NO + "</td><td>" + v.ABONELIK_DURUMU_A + "</td></tr>");
+                        });
+                        $('.nav-tabs a[href="#solid-tab3"]').tab('show');
+                    });
+
+                });
+
+
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                popup
+                    .setLatLng(e.latlng)
+                    .setContent("Hata Oluştu...")
+                    .openOn(mymap);
+            }
+        });
+
+    }
+
+    function MuracaatSorgu(e) {
+
+        $.ajax({
+            type: "GET",
+            // KIRIKKALE
+            url: "https://geo71.kirgaz.com.tr/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=bina_sorgu&STYLES&LAYERS=bina_sorgu&INFO_FORMAT=application%2Fjson&FEATURE_COUNT=50&X=50&Y=50&SRS=EPSG%3A4326&WIDTH=101&HEIGHT=101&BBOX=" + (e.latlng.lng - one_block) + "%2C" + (e.latlng.lat - one_block) + "%2C" + (e.latlng.lng + one_block) + "%2C" + (e.latlng.lat + one_block) + "",
+
+
+            dataType: "json",
+            success: function (response) {
+                console.log("e.latlng.lng : " + e.latlng.lng + "e.latlng.lat : " + e.latlng.lat + "e.latlng :" + e.latlng);
+
+                if (binaAbn != undefined) {
+                    binaAbn.clearLayers();
+                };
+                if (binaS != undefined) {
+                    binaS.clearLayers();
+                    // console.log("SİL..")
+                };
+                console.log("############################url: : " + "https://geo71.kirgaz.com.tr/geoserver/wms?SERVICE=WMS&VERSION=1.1.1&REQUEST=GetFeatureInfo&FORMAT=image%2Fpng&TRANSPARENT=true&QUERY_LAYERS=bina_sorgu&STYLES&LAYERS=bina_sorgu&INFO_FORMAT=application%2Fjson&FEATURE_COUNT=50&X=50&Y=50&SRS=EPSG%3A4326&WIDTH=101&HEIGHT=101&BBOX=" + (e.latlng.lng - one_block) + "%2C" + (e.latlng.lat - one_block) + "%2C" + (e.latlng.lng + one_block) + "%2C" + (e.latlng.lat + one_block) + "");
+                binaAbn.addData(response);
+                binaAbn.addTo(mymap);
+
+                BINA_ID = response.features[0].properties.BINA_ID;
+                ABONE = response.features[0].properties.ABONE;
+                YAPI = response.features[0].properties.YAPI_DURUMU;
+                IL_KODU = response.features[0].properties.IL_KODU;
+                console.log("Bina ID : " + BINA_ID + " İL KODU : " + IL_KODU);
+
+                popup
+                    .setLatLng(e.latlng)
+                    .setContent("BINA ID: " + BINA_ID + "<br/>ABONE: " + ABONE + "<br/>YAPI DURUMU: " + YAPI)
+                    .openOn(mymap);
+
+                $(document).ready(function () {
+                    //console.log('/Harita/muracaat_result?bn_id=' + BINA_ID)
+                    console.log('/Harita/muracaat_result_gercek?bn_id=' + BINA_ID + '&il_kod=' + IL_KODU)
+                    $.post('/Harita/muracaat_result_gercek?bn_id=' + BINA_ID + '&il_kod=' + IL_KODU, {}, function (data) {
+                        $('#muracaatGridGercek tr').remove();
+                        $('#muracaatGridGercek tbody').append("<tr><td><b>BINA ID :</td><td><b>" + BINA_ID + "</td> </tr>");
+                        $('#muracaatGridGercek tbody').append("<tr><td><b>ABONE NO</td><td><b>YER SAHİBİ</td><td><b>KULLANIM ALANI</td><td><b>DAİRE NO</td><td><b>TELEFON NO</td><td><b>SAYAC NO</td><td><b>MÜRACAAT NO</td></tr>");
+                        $.each(data, function (i, v) {
+                            $('#muracaatGridGercek tbody').append("<tr><td>" + v.ABONE_NO + "</td><td>" + v.YER_SAHIBI + "</td><td>" + v.KULLANIM_ALANI + "</td><td>" + v.DAIRE_NO + "</td><td>" + v.TELEFON_NO + "</td><td>" + v.SAYAC_NO + "</td><td>" + v.DABH_NO + "</td></tr>");
+                        });
+                        $('.nav-tabs a[href="#solid-tab4"]').tab('show');
+                    });
+
+                });
+
+
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                popup
+                    .setLatLng(e.latlng)
+                    .setContent("Hata Oluştu...")
+                    .openOn(mymap);
+            }
+        });
+
+    }
+
+    var parsel = L.geoJSON();
+
+    function parselSorguJSon(e) {
+        // https://cbsservis.tkgm.gov.tr/megsiswebapi.v2/api/parsel/39.14677820709354/34.16162252426148/
+        $.ajax({
+            type: "GET",
+            url: "https://cbsservis.tkgm.gov.tr/megsiswebapi.v2/api/parsel/" + e.latlng.lat + "/" + e.latlng.lng + "/",
+            dataType: "json",
+            success: function (response) {
+
+                if (binaAbn != undefined) {
+                    binaAbn.clearLayers();
+                };
+                if (binaS != undefined) {
+                    binaS.clearLayers();
+                };
+                if (parsel != undefined) {
+                    parsel.clearLayers();
+                };
+
+                parsel.addData(response);
+                parsel.addTo(mymap);
+
+                adaNo = response.properties.adaNo;
+                parselNo = response.properties.parselNo;
+                nitelik = response.properties.nitelik;
+                yuzolcum = response.properties.alan;
+
+
+                popup
+                    .setLatLng(e.latlng)
+                    .setContent("Ada No: " + adaNo + "<br/>Parsel: " + parselNo + "<br/>Yüzölçümü: " + yuzolcum + "<br/>Nitelik: " + nitelik)
+                    .openOn(mymap);
+                //});
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                popup
+                    .setLatLng(e.latlng)
+                    .setContent("Kayıt Bulunamadı")
+                    .openOn(mymap);
+            }
+        });
+    }
+
+    function parselSorgu(e) {
+        //  map.panTo(e.latlng);
+
+
+        $.ajax({
+            type: "GET",
+            url: "https://megsisapi.tkgm.gov.tr/parselbagligeometri/" + e.latlng.lat + "/" + e.latlng.lng + "/",
+            dataType: "xml",
+            success: function (xmlDoc) {
+                var x2js = new X2JS();
+                var jsonObj = x2js.xml2json(xmlDoc);
+                $.each(jsonObj, function (i, v) {
+                    console.log("##############################################   "+jsonObj);
+                    var geojson = Terraformer.WKT.parse(v.geometri);
+
+                    if (binaAbn != undefined) {
+                        binaAbn.clearLayers();
+                    };
+                    if (binaS != undefined) {
+                        binaS.clearLayers();
+                    };
+                    if (parsel != undefined) {
+                        parsel.clearLayers();
+                    };
+                    parsel.addTo(mymap);
+                    //var parsel = L.geoJSON().addTo(mymap);
+
+                    parsel.addData(geojson);
+
+
+                    popup
+                        .setLatLng(e.latlng)
+                        .setContent("Ada No: " + v.adaNo + "<br/>Parsel: " + v.parselNo + "<br/>Yüzölçümü: " + v.yuzolcum + "<br/>Nitelik: " + v.nitelik)
+                        .openOn(mymap);
+                });
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                popup
+                    .setLatLng(e.latlng)
+                    .setContent("Kayıt Bulunamadı")
+                    .openOn(mymap);
+            }
+        });
+
+
+    }
+
+    function zoomIn(e) {
+        //mymap.zoomIn();
+        //initialize(e);
+
+        $('.nav-tabs a[href="#solid-tab2"]').tab('show');
+
+        // alert(e.latlng);
+
+        panorama = new google.maps.StreetViewPanorama(
+            document.getElementById('street-view'), {
+            position: {
+                lat: e.latlng.lat,
+                lng: e.latlng.lng
+            },
+            pov: {
+                heading: 165,
+                pitch: 0
+            },
+            zoom: 1
+        });
+
+
+
+    }
+
+    function zoomOut(e) {
+        // mymap.zoomOut();
+
+        $("#modal").click(function () {
+            $("#modal_keyboard").modal();
+        });
+
+    }
+
+    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib = 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new L.TileLayer(osmUrl, { minZoom: 6, maxZoom: 22, attribution: osmAttrib });
+    mymap.addLayer(osm);
+
+
+    // The WMTS URL
+    var url = "https://geo71.kirgaz.com.tr/geoserver/gwc/service/wmts";
+
+    var basemap_wmts = new L.TileLayer.WMTS(url, {
+        layer: "basemap",
+        tilematrixSet: "EPSG:900913",
+        format: "image/jpeg",
+        attribution: "KIRGAZ"
+    });
+
+    //mymap.addLayer(basemap_wmts);
+
+
+
+
+
+    var basemap = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/gwc/service/wms", {
+        layers: 'basemap',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true,
+        attribution: "© 2018 KIRGAZ"
+    });
+
+    var uydu = L.tileLayer('https://geo71.kirgaz.com.tr/geoserver/gwc/service/tms/1.0.0/kirikkale_uydu@EPSG%3A900913@jpeg/{z}/{x}/{y}.jpg', {
+        tms: true,
+        maxZoom: 20,
+        noWrap: true,
+    });
+
+
+
+    var kirikkale_basemap = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'basemap',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true,
+        attribution: "© 2018 KIRGAZ"
+    });
+
+    var kirikkale_hybrid = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirikkale_hybrid',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true,
+        attribution: "© 2018 KIRGAZ"
+    });
+
+
+
+
+
+    var basemap_tms = L.tileLayer('https://geo71.kirgaz.com.tr/geoserver/gwc/service/tms/1.0.0/basemap@EPSG%3A900913@png/{z}/{x}/{y}.png', {
+        tms: true,
+        maxZoom: 22,
+        noWrap: true,
+    });
+
+    var basemap_tms_40 = L.tileLayer('https://geo71.kirgaz.com.tr/geoserver/gwc/service/tms/1.0.0/kirsehir_basemap@EPSG%3A900913@png/{z}/{x}/{y}.png', {
+        tms: true,
+        maxZoom: 22,
+        noWrap: true,
+    });
+
+    //var kirikkale_basemap = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/gwc/service/wms", {
+    //    layers: 'kirikkale_basemap',
+    //    format: 'image/png',
+    //    maxZoom: 22,
+    //    transparent: true,
+    //    attribution: "© 2018 KIRGAZ"
+    //});
+
+    //var kirikkale_basemap = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/gwc/service/wms", {
+    //    layers: 'kirikkale_basemap',
+    //    format: 'image/png',
+    //    maxZoom: 22,
+    //    transparent: true,
+    //    attribution: "© 2018 KIRGAZ"
+    //});
+
+    // Tüm kirikkale geliyor..
+    // mymap.addLayer(basemap);
+    mymap.addLayer(kirikkale_basemap);
+
+    var anahat_tematik = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirgaz:GIS_ANAHAT_TEMATIK',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true,
+        attribution: "© 2018 KIRGAZ"
+    });
+
+    var servis_tematik = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirsehir:GIS_SERVISHATTI',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true,
+        attribution: "© 2018 KIRGAZ"
+    });
+
+
+    var ada_parsel = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirikkale_adaparsel',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true,
+        attribution: "© 2018 KIRGAZ"
+    });
+
+    var GIS_CADDE_SOKAK = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirikkale:GIS_CADDE_SOKAK',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true,
+        attribution: "© 2018 KIRGAZ"
+    });
+
+
+    var GIS_ANAHAT = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirikkale:GIS_ANAHAT',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true
+    });
+
+
+    var GIS_ANAHAT_125 = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirikkale:GIS_ANAHAT',
+        format: 'image/png',
+        CQL_FILTER: 'BORU_CAP=125',
+        maxZoom: 22,
+        transparent: true
+    });
+
+    var GIS_SERVISHATTI = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirikkale:GIS_SERVISHATTI',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true
+    });
+
+    var GIS_ANAHAT_63 = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirikkale:GIS_ANAHAT',
+        format: 'image/png',
+        CQL_FILTER: 'BORU_CAP=63',
+        maxZoom: 22,
+        transparent: true
+    });
+
+    var GIS_ANAHAT_40 = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirikkale:GIS_ANAHAT',
+        format: 'image/png',
+        CQL_FILTER: 'BORU_CAP=40',
+        maxZoom: 22,
+        transparent: true
+    });
+
+    var GIS_ANAHAT_CELIK = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirikkale:GIS_ANAHAT',
+        format: 'image/png',
+        // CQL_FILTER: 'BORU_CAP=1;BORU_CAP=2;BORU_CAP=3;BORU_CAP=4;BORU_CAP=6;BORU_CAP=8;BORU_CAP=10;BORU_CAP=12;BORU_CAP=14;BORU_CAP=16;BORU_CAP=20',
+        CQL_FILTER: 'HAT_CINSI=\'CELIK HAT\'',
+
+        maxZoom: 22,
+        transparent: true
+    });
+
+    var GIS_VANALAR = L.tileLayer.wms("https://geo71.kirgaz.com.tr/geoserver/wms", {
+        layers: 'kirikkale:GIS_VANALAR',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true
+    });
+
+    var depremriski = L.tileLayer.wms("https://tdthmaps.afad.gov.tr/TSTH-Fusion/wms", {
+        layers: 'TSTH_PGA_475_50',
+        maxZoom: 22,
+        transparent: true
+    });
+
+    var dirifay = L.tileLayer.wms("http://yerbilimleri.mta.gov.tr:8080/geoserver/MTA/wms?", {
+        layers: 'MTA:DIRIFAY',
+        format: 'image/png',
+        maxZoom: 22,
+        transparent: true
+    });
+
+
+    var basemaps = {
+        Grayscale: L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+            maxZoom: 22,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }),
+        Sokak: L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 22,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        })
+    };
+
+
+    var groupedOverlays = {
+        "Altlık Harita": {
+            "OSM": osm,
+            "Uydu": uydu,
+            "Uydu Hybrit": kirikkale_hybrid,
+            "KIRIKKALE": kirikkale_basemap,
+            "Ada Parsel": ada_parsel
+        },
+        "Riskler": {
+            "Deprem Riski": depremriski,
+            "Diri Faylar": dirifay
+        },
+        "Katmanlar": {
+            "Cadde / Sokak": GIS_CADDE_SOKAK,
+            "Anahat": GIS_ANAHAT,
+            "Anahat 125": GIS_ANAHAT_125,
+            "Anahat 63": GIS_ANAHAT_63,
+            "Anahat 40": GIS_ANAHAT_40,
+            "Anahat Çelik": GIS_ANAHAT_CELIK,
+            "Servis Hattı": GIS_SERVISHATTI,
+            "Vanalar": GIS_VANALAR
+        }
+    };
+
+    var options = {
+        // Make the "Landmarks" group exclusive (use radio inputs)
+        exclusiveGroups: ["Altlık"],
+        // Show a checkbox next to non-exclusive group labels for toggling all
+        groupCheckboxes: false
+    };
+
+    var layerControl = L.control.groupedLayers(null, groupedOverlays, options);
+    mymap.addControl(layerControl);
+
+
+
+
+    // CETVEL
+    var options = {
+        position: 'topleft',
+        lengthUnit: {
+            factor: 1000, //1000    //  from km to m
+            display: 'Metre',
+            decimal: 2
+        },
+        angleUnit: {
+            display: '&deg;',
+            decimal: 2,
+            factor: null
+        },
+        lineStyle: {
+            color: 'black',    // blue, red
+            dashArray: '1,6'
+        }
+
+    };
+    //L.control.ruler().addTo(mymap);
+    L.control.ruler(options).addTo(mymap);
+
+
+
+    var popup = L.popup();
+
+
+
+    $(document).ready(function () {
+
+
+
+        var kontrol = window.location.search.substring(1, 6);  // gelen url de IS_ID var ise zoom yapar.
+        var kontrol_id = window.location.search.substring(12, 3);
+        var gelen_id = window.location.hash.substring(1, 6);
+        var gelen_koor = window.location.search.substring(24, 7);
+        // alert(kontrol_id);
+        console.log("window.location.search : " + window.location.search);   // window.location.search)
+        console.log("gelen_koor : " + gelen_koor);
+        if (kontrol == 'is_id') {
+            $.post('/Harita/harita_zoom_gelen?is_id=' + gelen_id, {}, function (data) {
+                $.each(data, function (i, v) {
+                    mymap.setView(new L.LatLng(v.MINY, v.MINX), 20);
+
+                    if (markerbinaid != undefined) {
+                        mymap.removeLayer(markerbinaid);
+                    };
+
+                    markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+
+                    //markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap); // Eklendi..
+                    // var markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap); // Eklendi..
+
+
+                });
+            });
+        }
+
+        if (kontrol == 'kn_id') {
+            console.log("kn_id : " + gelen_id);
+            mymap.setView(new L.LatLng(gelen_koor), 20);
+
+            if (markerbinaid != undefined) {
+                mymap.removeLayer(markerbinaid);
+            };
+
+            markerbinaid = L.marker([gelen_koor]).addTo(mymap);
+
+
+        }
+
+        $.post('/Harita/dropdown_result?alan=IL_ADI&tablo=dotsis.GIS_IL&where=IL_ADI&query=KIR', {}, function (data) {
+            $.each(data, function (i, v) {
+                $('#iller').append('<option value="' + v.IL_ADI + '">' + v.IL_ADI + '</option>');
+                $('#illertkgm').append('<option value="' + v.IL_ADI + '">' + v.IL_ADI + '</option>');
+            });
+        });
+
+
+    });
+
+    $("#iller").change(function () {
+        var secili_il = $('#iller').val();
+        console.log(secili_il);
+
+        $.post('/Harita/dropdown_result?alan=ILCE_ADI,ILCE_KODU&tablo=dotsis.GIS_ILCE&where=IL_ADI&query=' + secili_il, {}, function (data) {
+            $(ilceler).empty();
+            $('#ilceler').append('<option value="0"> </option>');
+            $(mahalleler).empty();
+            $(cadde).empty();
+            $(binalar).empty();
+            $.each(data, function (i, v) {
+                $('#ilceler').append('<option value="' + v.ILCE_KODU + '">' + v.ILCE_ADI + '</option>');
+
+            });
+        });
+    });
+
+    $("#illertkgm").change(function () {
+        var secili_il_t = $('#illertkgm').val();
+        console.log(secili_il_t);
+
+
+        $.post('/Harita/dropdown_result_tkgm?alan=ILCE_ADI,ILCE_KODU&tablo=CBS_MAH_TKGM&where=IL_ADI&query=' + secili_il_t, {}, function (data) {
+            $(ilcelertkgm).empty();
+            $('#ilcelertkgm').append('<option value="0"> </option>');
+            $(mahallelertkgm).empty();
+            $('#adaid').val("");
+            $('#parselid').val("");
+            $.each(data, function (i, v) {
+                $('#ilcelertkgm').append('<option value="' + v.ILCE_KODU + '">' + v.ILCE_ADI + '</option>');
+
+            });
+        });
+    });
+
+
+    $("#ilceler").change(function () {
+        var secili_ilce = $('#ilceler').val();
+        var secili_ilce2 = $('#ilceler option:selected').text();
+        console.log(secili_ilce + " - " + secili_ilce2);
+
+        $.post('/Harita/dropdown_result_ilce?alan=MAHALLE_ADI,MAHALLE_KODU&tablo=GIS_MAHALLE&where=ILCE_KODU&query=' + secili_ilce, {}, function (data) {
+            $(mahalleler).empty();
+            $('#mahalleler').append('<option value="0"> </option>');
+            $(cadde).empty();
+            $(binalar).empty();
+            $.each(data, function (i, v) {
+                $('#mahalleler').append('<option value="' + v.MAHALLE_KODU + '">' + v.MAHALLE_ADI + '</option>');
+
+            });
+        });
+    });
+
+    $("#ilcelertkgm").change(function () {
+        var secili_ilce_t = $('#ilcelertkgm').val();
+        var secili_ilce2_t = $('#ilcelertkgm option:selected').text();
+        console.log(secili_ilce_t + " - " + secili_ilce2_t);
+        $.post('/Harita/dropdown_result_ilce_tkgm?alan=MAHALLE_ADI,MAHALLE_KODU&tablo=CBS_MAH_TKGM&where=ILCE_KODU&query=' + secili_ilce_t, {}, function (data) {
+            $(mahallelertkgm).empty();
+            $('#adaid').val("");
+            $('#parselid').val("");
+            $.each(data, function (i, v) {
+                $('#mahallelertkgm').append('<option value="' + v.MAHALLE_KODU + '">' + v.MAHALLE_ADI + '</option>');
+
+            });
+        });
+    });
+
+    $("#mahalleler").change(function () {
+        var secili_mahalle = $('#mahalleler').val();                    // Mahalle Kodu
+        var secili_mahalle2 = $('#mahalleler option:selected').text();  // Mahalle Adı
+        var secili_ilce = $('#ilceler').val();                          // ilce Kodu
+        console.log(secili_mahalle + " - " + secili_mahalle2);
+
+        //  $.post('/Harita/dropdown_result_mah?alan=CADDE_SOKAK_ADI,CADDE_SOKAK_KODU&tablo=GIS_CADDE_SOKAK&where=MAHALLE_KODU&query1=' + secili_ilce + '&query2=' + secili_mahalle, {}, function (data) {
+        $.post('/Harita/dropdown_result_mah?alan=CADDE_SOKAK_ADI,CADDE_SOKAK_KODU&tablo=GIS_CAD_MAH&where=MAHALLE_KODU&query1=' + secili_ilce + '&query2=' + secili_mahalle, {}, function (data) {
+
+            $(cadde).empty();
+            $('#cadde').append('<option value="0"></option>');
+            $(binalar).empty();
+            $.each(data, function (i, v) {
+                $('#cadde').append('<option value="' + v.CADDE_SOKAK_KODU + '">' + v.CADDE_SOKAK_ADI + '</option>');
+            });
+        });
+
+        $.post('/Harita/zoom_result_mah?alan=minx,maxx,miny,maxy&tablo=GIS_MAHALLE_KOOR&where=MAHALLE_ID&ilce_kod=' + secili_ilce + '&mah_kod=' + secili_mahalle, {}, function (data) {
+            //$(cadde).empty();
+            $.each(data, function (i, v) {
+                mymap.setView(new L.LatLng(v.MINY, v.MINX), 14);
+                console.log(v.XCOOR, v.YCOOR);
+            });
+        });
+
+    });
+
+    $("#cadde").change(function () {
+        var secili_ilce = $('#ilceler').val();              // ilce Kodu
+        var secili_mahalle = $('#mahalleler').val();        // mah Kodu
+        var secili_cadde = $('#cadde').val();               // cd Kodu
+        console.log(secili_cadde);
+        $.post('/Harita/dropdown_result_yol?alan=BINA_NO,BINA_ID&tablo=GIS_BINA&where=dotsis.CADDE_SOKAK_KODU&query1=' + secili_ilce + '&query2=' + secili_mahalle + '&query3=' + secili_cadde, {}, function (data) {
+            //$.post('/Harita/dropdown_result?alan=BINA_NO&tablo=GIS_BINA&where=CADDE_SOKAK_ADI&query=' + secili_cadde, {}, function (data) {
+            $(binalar).empty();
+            $('#binalar').append('<option value="0"></option>');
+            $.each(data, function (i, v) {
+                $('#binalar').append('<option value="' + v.BINA_ID + '">' + v.BINA_NO + '</option>');
+            });
+        });
+
+        $.post('/Harita/zoom_result_cd?alan=XX,YY&tablo=GIS_CADDE_SOKAK_KOOR&where=CADDE_SOKAK_KODU&ilce_kod=' + secili_ilce + '&mah_kod=' + secili_mahalle + '&cd_kod=' + secili_cadde, {}, function (data) {
+            //   console.log(data);
+            $.each(data, function (i, v) {
+                mymap.setView(new L.LatLng(v.YY, v.XX), 19);
+                console.log(" DDD : " + v.XX, v.YY);
+            });
+        });
+
+
+    });
+
+    $("#binalar").change(function () {
+        var secili_bina_id = $('#binalar').val();
+        var secili_bina_no = $('#binalar option:selected').text();
+        console.log(secili_bina_id);
+        $.post('/Harita/bnbox?tablo=GIS_BINA&field=BINA_ID&idkolonu=' + secili_bina_id, {}, function (data) {
+            $.each(data, function (i, v) {
+
+                mymap.setView(new L.LatLng(v.MINY, v.MINX), 20);
+
+                if (markerbinaid != undefined) {
+                    mymap.removeLayer(markerbinaid);
+                };
+
+                markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap).bindPopup("<b> BİNA ID:" + secili_bina_id + "<br/>BİNA NO :" + secili_bina_no + "</b><br/>").openPopup();
+                //    var markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap).bindPopup("<b> BİNA ID:" + secili_bina_id + "<br/>BİNA NO :" + secili_bina_no + "</b><br/>").openPopup();
+
+
+                console.log(v.MINY, v.MINX);
+
+            });
+        });
+    });
+
+    $("#btn_parselsorgu").click(function () {
+        var ada_id = $('#adaid').val();
+        var parsel_id = $('#parselid').val();
+        var mah_id = $('#mahallelertkgm').val();
+        //var mah_id = $('#mahallelertkgm option:selected').text();  // seçili mahalle id
+        console.log(ada_id, + " - " + parsel_id);
+
+        // url: "https://cbsservis.tkgm.gov.tr/megsiswebapi.v2/api/parsel/124149/1381/102",
+
+        $.ajax({
+            type: "GET",
+            url: "https://cbsservis.tkgm.gov.tr/megsiswebapi.v2/api/parsel/" + mah_id + "/" + ada_id + "/" + parsel_id + "",
+            dataType: "json",
+            success: function (response) {
+
+                // var parsel = L.geoJSON().addTo(mymap);
+                if (parsel != undefined) {
+                    parsel.clearLayers();
+                };
+
+                parsel.addTo(mymap);
+
+                parsel.addData(response.geometry);
+
+                mymap.fitBounds(parsel.getBounds());
+
+                parselNo = response.properties.parselNo;
+                alan = response.properties.alan;
+
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.log("ada parsel sorgulama hata oluştu");
+            }
+        });
+    });
+
+
+
+    $("#btn_yol_sorgu").click(function () {
+        var yol_adi_str = $('#yol_sorgu').val();
+        var bilgi = "";
+        console.log(yol_adi_str);
+
+        $.post('/Harita/yolbox?yoladi=' + yol_adi_str, {}, function (data) {
+
+            $('#yolGrid tr').remove();
+            $('#yolGrid tbody').append("<tr><td><b>SOKAK ADI :</td><td><b>" + yol_adi_str + "</td> </tr>");
+            $('#yolGrid tbody').append("<tr><td><b>YOL ADI</td><td><b>MAHALLE ADI </td><td><b>İLÇE ADI </td><td><b>YOL KODU </td><td><b>HARİTA</td></tr>");
+
+            $.each(data, function (i, v) {
+
+                // bilgi = v.ADA_NO;
+
+                $('#yolGrid tbody').append("<tr><td>" + v.CADDE_SOKAK_ADI + "</td><td>" + v.MAHALLE_ADI + "</td><td>" + v.ILCE_ADI + "</td><td>" + v.CADDE_SOKAK_KODU + "</td><td> <button onclick=yolaGit(" + v.XCOOR + "," + v.YCOOR + ")>Göster</button> </td></tr>");
+
+                console.log(v.YCOOR, v.XCOOR);
+                $('#yol_sorgu').val("");
+
+            });
+            //   console.log(bilgi);
+
+            $('#YolModal').modal('toggle');
+
+        });
+        $('#yol_sorgu').val("");
+    });
+
+    function yolaGit(x, y) {
+
+        if (markerbinaid != undefined) {
+            mymap.removeLayer(markerbinaid);
+        };
+
+        console.log(x + " - " + y);
+        mymap.setView(new L.LatLng(y, x), 20);
+        //  var markeradamid = L.marker([y, x]).addTo(mymap);
+        markerbinaid = L.marker([y, x]).addTo(mymap);
+
+        mymap.addLayer(ada_parsel);
+        $('#YolModal').modal('hide');
+    }
+
+
+    $("#btn_adasorgu_bel").click(function () {
+        var adaid_bel_str = $('#adaid_bel').val();
+        var bilgi = "";
+        console.log(adaid_bel_str);
+
+        $.post('/Harita/adabox?adano=' + adaid_bel_str, {}, function (data) {
+
+            $('#adaGrid tr').remove();
+            $('#adaGrid tbody').append("<tr><td><b>ADA NO :</td><td><b>" + adaid_bel_str + "</td> </tr>");
+            $('#adaGrid tbody').append("<tr><td><b>İLÇE ADI</td><td><b>İLÇE ADI (CBS)</td><td><b>MAHALLE ADI </td><td><b>HARİTA</td></tr>");
+
+
+            $.each(data, function (i, v) {
+
+                bilgi = v.ADA_NO;
+
+                $('#adaGrid tbody').append("<tr><td>" + v.ILCE_ADI + "</td><td>" + v.ILCE_ADI_CBS + "</td><td>" + v.MAHALLE_ADI + "</td><td> <button onclick=adaGit(" + v.X + "," + v.Y + ")>Göster</button> </td></tr>");
+
+                //  mymap.setView(new L.LatLng(v.Y, v.X), 17);
+                //  var markerbinaid = L.marker([v.X, v.Y]).addTo(mymap);
+                console.log(v.Y, v.X);
+                $('#adaid_bel').val("");
+
+            });
+            console.log(bilgi);
+
+            //if (bilgi == "") {
+
+            //}
+            //else {
+            $('#AdaModal').modal('toggle');
+            //    $('#AdaInfo').text("Ada No : " + bilgi);
+            //}
+
+        });
+        $('#adaid_bel').val("");
+    });
+
+    function adaGit(x, y) {
+
+        if (markerbinaid != undefined) {
+            mymap.removeLayer(markerbinaid);
+        };
+
+        console.log(x + " - " + y);
+        mymap.setView(new L.LatLng(y, x), 20);
+        //  var markeradamid = L.marker([y, x]).addTo(mymap);
+        markerbinaid = L.marker([y, x]).addTo(mymap);
+
+        mymap.addLayer(ada_parsel);
+        $('#AdaModal').modal('hide');
+    }
+
+
+    var markerbinaid = {};
+
+    $("#binasorgu").click(function (e) {
+        var binaid = $('#binaid').val();
+
+        console.log(binaid);
+        $.post('/Harita/bnbox?tablo=GIS_BINA&field=BINA_ID&idkolonu=' + binaid, {}, function (data) {
+
+            $.each(data, function (i, v) {
+                //if (i > 0)
+                //{
+                console.log("i : " + i + "V.MINY : " + v.MINY);
+                mymap.setView(new L.LatLng(v.MINY, v.MINX), 20);
+                //var markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+                if (markerbinaid != undefined) {
+                    mymap.removeLayer(markerbinaid);
+                };
+
+                markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+
+                console.log(v.MINY, v.MINX);
+                $('#binaid').val("");
+
+
+            });
+        });
+    });
+
+
+    $("#aboneid").click(function () {
+        var abnid = $('#abonesorgu').val();
+
+        console.log(binaid);
+        $.post('/Harita/abnbox?tablo=CBS_ABN_IHBAR_V&field=ABONE_NO&idkolonu=' + abnid, {}, function (data) {
+            $.each(data, function (i, v) {
+
+                mymap.setView(new L.LatLng(v.MINY, v.MINX), 20);
+                //var markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+
+                if (markerbinaid != undefined) {
+                    mymap.removeLayer(markerbinaid);
+                };
+
+                markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+
+                console.log(v.MINY, v.MINX);
+                $('#abonesorgu').val("");
+
+            });
+        });
+    });
+
+    $("#btnsayacid").click(function () {
+        var sayacid = $('#txtsayacsorgu').val();
+
+        console.log(binaid);
+        $.post('/Harita/abnbox?tablo=CBS_ABN_IHBAR_V&field=SAYAC_NO&idkolonu=' + sayacid, {}, function (data) {
+            $.each(data, function (i, v) {
+
+                mymap.setView(new L.LatLng(v.MINY, v.MINX), 20);
+                //var markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+                if (markerbinaid != undefined) {
+                    mymap.removeLayer(markerbinaid);
+                };
+
+                markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+
+                console.log(v.MINY, v.MINX);
+                $('#txtsayacsorgu').val("");
+
+            });
+        });
+    });
+
+    $("#btnvanaid").click(function () {
+        var vana_no = $('#txtvanaNo').val();
+
+        console.log(binaid);
+        $.post('/Harita/vanabox?vana_no=' + vana_no, {}, function (data) {
+            $.each(data, function (i, v) {
+
+                mymap.setView(new L.LatLng(v.MINY, v.MINX), 20);
+                //var markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+                if (markerbinaid != undefined) {
+                    mymap.removeLayer(markerbinaid);
+                };
+
+                markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+
+                console.log(v.MINY, v.MINX);
+                $('#txtsayacsorgu').val("");
+
+            });
+        });
+    });
+
+    $("#cepid").click(function () {
+        var cepid = $('#cepsorgu').val();
+
+        console.log(binaid);
+        $.post('/Harita/cepbox?tablo=CBS_ABN_IHBAR_V&field=TELEFON_NO&idkolonu=' + cepid, {}, function (data) {
+            $.each(data, function (i, v) {
+
+                mymap.setView(new L.LatLng(v.MINY, v.MINX), 20);
+                //var markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+                if (markerbinaid != undefined) {
+                    mymap.removeLayer(markerbinaid);
+                };
+
+                markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+
+
+                console.log(v.MINY, v.MINX);
+                $('#cepsorgu').val("");
+
+            });
+        });
+    });
+
+    $("#btntcid").click(function () {
+        var tcid = $('#txttcsorgu').val();
+
+        console.log(binaid);
+        $.post('/Harita/cepbox?tablo=CBS_ABN_IHBAR_V&field=VATANDASLIK_NO&idkolonu=' + tcid, {}, function (data) {
+            $.each(data, function (i, v) {
+
+                mymap.setView(new L.LatLng(v.MINY, v.MINX), 20);
+                //var markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+                if (markerbinaid != undefined) {
+                    mymap.removeLayer(markerbinaid);
+                };
+
+                markerbinaid = L.marker([v.MINY, v.MINX]).addTo(mymap);
+
+                console.log(v.MINY, v.MINX);
+                $('#txttcsorgu').val("");
+
+
+            });
+        });
+    });
+
+    $('#71_Merkez').on('click', function () {
+        mymap.setView(new L.LatLng(39.8437, 33.5062), 17);
+    });
+
+    $('#zoomin').on('click', function () {
+        console.log("zoom in");
+        mymap.zoomIn();
+    });
+
+    $('#zoomout').on('click', function () {
+        console.log("zoom out");
+        mymap.zoomOut();
+    });
+
+    $('#temizle').on('click', function () {
+        console.log("temizle");
+
+        if (markerbinaid != undefined) {
+            mymap.removeLayer(markerbinaid);
+        };
+        if (binaS != undefined) {
+            binaS.clearLayers();
+
+        };
+        if (binaAbn != undefined) {
+            binaAbn.clearLayers();
+        };
+
+
+        /*
+        mymap.eachLayer(function (layer) {
+            mymap.removeLayer(parsel);
+        });
+        */
+        markers.clearLayers();
+        //mymap.removeLayer(parsel);
+
+    });
+
+    $('#tum').on('click', function () {
+        console.log("tum");
+        mymap.setView([39.14371, 34.16283], 13);
+
+    });
+
+    $('#btn_submit').on('click', function () {
+        console.log("submitted");
+        map.fitBounds([
+            [39.1450837, 37.1643514],
+            [39.1460079, 37.165099]
+        ], {
+            maxZoom: 15
+        });
+        //$('#ddlvalue').val(0);
+    });
+
+
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDigPnOlaQ6J1CwV5f5A-s9rqWOH2x1f8">
+</script>

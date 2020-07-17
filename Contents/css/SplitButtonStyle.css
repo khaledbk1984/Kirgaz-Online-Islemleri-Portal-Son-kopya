@@ -1,0 +1,6 @@
+.drop-list{
+  display: flex;
+}
+.drop-list .btn-group{
+  padding:10px;
+}

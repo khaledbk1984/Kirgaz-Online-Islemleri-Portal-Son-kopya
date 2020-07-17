@@ -1,0 +1,71 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+@{
+    ViewData["Title"] = "getCari";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="content">
+        @using (Html.BeginForm("getCari", "Home"))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group row">
+                <label for="txtCepTEL" class="col-sm-2 col-form-label">Firma Kodu</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="txtCepTEL" name="firmaKodu" placeholder="Firma Kodu Giriniz">
+                </div>
+                <label for="txtCepTEL" class="col-sm-2 col-form-label">Cari Mektari</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="txtCepTEL" name="cariMiktari" placeholder="Cari Miktari">
+                </div>
+                <div class="col-sm-1">
+
+                    <button type="submit" class="btn btn-info">Gonder</button>
+                </div>
+
+            </div>
+        }
+        <!-- Page length options -->
+        <div class="panel panel-flat">
+            <!-- Page length options -->
+            <div class="panel panel-flat">
+
+                <table id="example" class="table datatable-button-init-basic">
+                    <thead>
+                        <tr>
+                            <th>FIRMA KODU</th>
+                            <th>FIRMA ADI</th>
+                            <th>CARI ODENEN</th>
+                            <th>CARI KALAN</th>
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (DataRow row in Model.Rows)
+                        {
+                            <tr>
+                                @foreach (DataColumn col in Model.Columns)
+                                {
+
+                                    <td> @row[col.ColumnName]</td>
+
+
+                                }
+
+
+
+
+
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /page length options -->
+        </div>
+    </div>
+

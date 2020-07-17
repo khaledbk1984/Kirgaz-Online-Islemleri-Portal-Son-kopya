@@ -1,0 +1,290 @@
+﻿@model System.Data.DataTable
+@using System.Data;
+@{
+    ViewBag.Title = "getGonderilenSMSListesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/Contents/plugins/fontawesome-free/css/all.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="~/Contents/plugins/daterangepicker/daterangepicker.css">
+<!-- overlayScrollbars -->
+<!-- Ionicons -->
+<!-- daterange picker -->
+<!-- iCheck for checkboxes and radio inputs -->
+<link rel="stylesheet" href="~/Contents/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+<!-- Bootstrap Color Picker -->
+<link rel="stylesheet" href="~/Contents/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+<!-- Tempusdominus Bbootstrap 4 -->
+<link rel="stylesheet" href="~/Contents/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+<!-- Select2 -->
+<link rel="stylesheet" href="~/Contents/plugins/select2/css/select2.min.css">
+<link rel="stylesheet" href="~/Contents/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="~/Contents/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+<link rel="stylesheet" href="~/Contents/dist/css/adminlte.min.css">
+<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+
+<div class="content">
+    @using (Html.BeginForm("getGonderilenSMSListesi", "Home"))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group row">
+            <label for="txtCepTEL" class="col-sm-2 col-form-label">Zaman Aralığı Seçiniz</label>
+            <div class="col-sm-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="far fa-calendar-alt"></i>
+                        </span>
+                    </div>
+
+                    <input type="text" id="zamanAraligi" name="zamanAraligi" placeholder="DD / MM / YYYY" class="form-control">
+                </div>
+            </div>
+            <label for="txtCepTEL" class="col-sm-2 col-form-label">SMS Türü</label>
+            <div class="col-sm-3">
+                <select name="SMSTuruSelector" class="form-control select2" style="width: 100%;font-weight:bold">
+                    <option>SMS Durumu Seçiniz</option>
+                    <option id="1">Fatura SMS</option>
+                    <option id="2">Yetersiz Endeks SMS</option>
+                    <option id="3">Adres Kapalı SMS</option>
+                    <option id="6">İhbar SMS</option>
+                    <option id="4">Telefon No Boş</option>
+                    <option id="5">CepTel Formatında Değil</option>
+                    <option>Gönderilmemiş Fatura SMSleri</option>
+                    <option>İlgili Borç Ödeğindeiğinden İhbar SMS Gönderilmemiştir</option>
+
+
+
+                </select>
+            </div>
+            <div class="col-sm-1">
+
+                <button type="submit" class="btn btn-info">Sorgula</button>
+            </div>
+
+        </div>
+    }
+    <!-- Page length options -->
+    <div class="panel panel-flat">
+        <!-- Page length options -->
+        <div class="panel panel-flat">
+
+            <table id="example" class="table datatable-button-init-basic">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ABONE_ID</th>
+                        <th>ABONE_ADI</th>
+                        <th>ABONE_SOYADI</th>
+                        <th>CEP_TEL</th>
+                        <th>Fatura SMS</th>
+                        <th>Fatura SMS ID</th>
+                        <th>Fatura SMS tarihi</th>
+                        <th>İhbar SMS</th>
+                        <th>İhbar SMS ID</th>
+                        <th>İhbar SMS tarihi</th>
+
+
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int i = 0; }
+                        @foreach (DataRow row in Model.Rows)
+                        {
+                            i++;
+                            string faturaBayragi = "";
+
+
+                    <tr>
+                        <td> @i</td>
+                        @foreach (DataColumn col in Model.Columns)
+                        {
+                            //x.SMS_BILGI, x.FATURA_SMS_ID, x.FATURA_SMS_GONDERME_ZAMAN, x.SMS_IHBAR
+                            var message = "";
+                            if (col.ColumnName == "SMS_BILGI")
+                            {
+                                message = "";
+                                faturaBayragi = row[col.ColumnName].ToString();
+                                switch (row[col.ColumnName])
+                                {
+                                    case "0":
+                                        message = "SMS Göndeilmemiştir";
+                                        break;
+                                    case "1":
+                                        message = "Fatura SMS Gönderilmiştir";
+                                        break;
+                                    case "2":
+                                        message = "Yetersiz Endeks SMS Gönderilmiştir";
+                                        break;
+                                    case "3":
+                                        message = "Adres Kapalı SMS Gönderilmiştir";
+                                        break;
+                                    case "4":
+                                        message = "Telefon Numarası Boş";
+                                        break;
+                                    case "5":
+                                        message = "CepTel olmayan Bir Numara";
+                                        break;
+                                    case "6":
+                                        message = "İhbar iİle İlgili Faturalar Ödenmiş";
+                                        break;
+                                }
+                                <td> @message</td>
+                                continue;
+
+                            }
+                            else if (col.ColumnName == "SMS_IHBAR")
+                            {
+                                //System.Diagnostics.Debug.Print("##############################   " + col.ColumnName);
+                                switch (row[col.ColumnName])
+                                {
+                                    case "0":
+                                        /* if (faturaBayragi == "0")
+                                         {
+                                             message = "";
+                                         }
+                                         else
+                                         {*/
+                                        message = "İhbar SMS Göndeilmemiştir";
+                                        // }
+                                        break;
+                                    case "1":
+                                        message = "İhbar SMS Gönderilmiştir";
+                                        break;
+
+                                    case "4":
+                                        message = "Telefon Numarası Boş";
+                                        break;
+                                    case "5":
+                                        message = "CepTel olmayan Bir Numara";
+                                        break;
+                                    case "6":
+                                        message = "İhbar İle İlgili Faturalar Ödenmiş";
+                                        break;
+
+
+                                }
+                                <td> @message</td>
+                                continue;
+                            }
+                            else
+                            {
+
+                                <td> @row[col.ColumnName]</td>
+                            }
+
+
+                        }
+
+
+
+
+
+
+                    </tr>
+                        }
+                    </tbody>
+            </table>
+        </div>
+        <!-- /page length options -->
+    </div>
+
+    <script src="~/Contents/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="~/Contents/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Select2 -->
+    <script src="~/Contents/plugins/select2/js/select2.full.min.js"></script>
+    <!-- Bootstrap4 Duallistbox -->
+    <script src="~/Contents/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+    <!-- InputMask -->
+    <script src="~/Contents/plugins/moment/moment.min.js"></script>
+    <script src="~/Contents/plugins/inputmask/min/jquery.inputmask.bundle.min.js"></script>
+    <!-- date-range-picker -->
+    <script src="~/Contents/plugins/daterangepicker/daterangepicker.js"></script>
+    <!-- bootstrap color picker -->
+    <script src="~/Contents/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="~/Contents/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- Bootstrap Switch -->
+    <script src="~/Contents/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/Contents/dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/Contents/dist/js/demo.js"></script>
+
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="~/Contents/css/SplitButtonStyle.css">
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2()
+
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                                        theme: 'bootstrap4'
+            })
+
+            //Datemask dd/mm/yyyy
+            $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+            //Datemask2 mm/dd/yyyy
+            $('#datemask2').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+            //Money Euro
+            $('[data-mask]').inputmask()
+
+            //Date range picker
+            $('#zamanAraligi').daterangepicker()
+            //Date range picker with time picker
+            $('#reservationtime').daterangepicker({
+                                    timePicker: true,
+                timePickerIncrement: 30,
+                locale: {
+                                        format: 'DD/MM/YYYY hh:mm A'
+                }
+                                    })
+            //Date range as a button
+            $('#daterange-btn').daterangepicker(
+                {
+                                    ranges: {
+                                            'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                            },
+                    startDate: moment().subtract(29, 'days'),
+                    endDate: moment()
+                },
+                function (start, end) {
+                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+                }
+            )
+
+            //Timepicker
+            $('#timepicker').datetimepicker({
+                        format: 'LT'
+            })
+
+            //Bootstrap Duallistbox
+            $('.duallistbox').bootstrapDualListbox()
+
+            //Colorpicker
+            $('.my-colorpicker1').colorpicker()
+            //color picker with addon
+            $('.my-colorpicker2').colorpicker()
+
+            $('.my-colorpicker2').on('colorpickerChange', function (event) {
+                $('.my-colorpicker2 .fa-square').css('color', event.color.toString());
+                        });
+
+            $("input[data-bootstrap-switch]").each(function () {
+                $(this).bootstrapSwitch('state', $(this).prop('checked'));
+                        });
+
+        })
+    </script>

@@ -1,0 +1,95 @@
+﻿
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - KIRGAZ Harita Modülü</title>
+    @*@Scripts.Render("~/bundles/modernizr")*@
+    <script src="~/bundles/modernizr"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    <link href="~/Content/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/css/core.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/css/components.css" rel="stylesheet" type="text/css">
+    <link href="~/Content/css/colors.css" rel="stylesheet" type="text/css">
+    <!-- /global stylesheets -->
+    <!-- Core JS files -->
+    <script src="~/Scripts/jquery-3.2.1.min.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/core/libraries/bootstrap.min.js"></script>
+    <!-- /core JS files -->
+    <!-- Theme JS files -->
+    @RenderSection("Includes", required: false)
+    <!-- /theme JS files -->
+
+    <meta name="description" content="KIRGAZ CBS" />
+</head>
+
+<body>
+    <!-- Main navbar -->
+    <div class="navbar navbar-inverse bg-primary-600 navbar-component">
+        <div class="navbar-header">
+
+            <!--   <a class="navbar-brand" href="/Home/Harita">Harita</a> -->
+
+            <ul class="nav navbar-nav pull-right visible-xs-block">
+                <li><a data-toggle="collapse" data-target="#navbar-demo3"><i class="icon-grid3"></i></a></li>
+            </ul>
+        </div>
+
+        <div class="navbar-collapse collapse" id="navbar-demo3">
+            <ul class="nav navbar-nav">
+                <!--  <li id="zoomin"><a href="#"><i class="icon-zoomin3"></i> Yaklaş</a></li>
+                 <li id="zoomout"><a href="#"><i class="icon-zoomout3"></i> Uzaklaş</a></li>
+                 <li><a href="#"><i class="icon-hand"></i> Kaydır</a></li>
+                 <li id="tum"><a href="#"><i class="icon-move-alt1"></i> Tümünü Göster</a></li> -->
+                <!--
+                @if (ViewBag.IL_Harita == "KIRIKKALE" )
+                {
+                    <li id="71_Merkez"><a href="#"><i class="icon-move-alt1"></i> KIRIKKALE Merkez </a></li>
+                }
+                @if (ViewBag.IL_Harita == "KIRSEHIR")
+                {
+                    <li id="40_Merkez"><a href="#"><i class="icon-move-alt1"></i> KIRŞEHİR Merkez </a></li>
+                    <li id="40_Kaman"><a href="#"><i class="icon-move-alt1"></i> KAMAN </a></li>
+                    <li id="40_Mucur"><a href="#"><i class="icon-move-alt1"></i> MUCUR </a></li>
+                }
+                    -->
+                <!--    <li id="temizle"><a href="#"><i class="icon-trash"></i> #test#</a></li> -->
+
+            </ul>
+
+            <!--
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><i class="icon-printer4 position-left"></i> ####</a></li>
+            </ul>
+            -->
+        </div>
+    </div>
+    <!-- /main navbar -->
+    <!-- Page container -->
+    <div class="page-container">
+        <!-- Page content -->
+        <div class="page-content">
+            <!-- Main sidebar -->
+            <!-- /main sidebar -->
+            <!-- Main content -->
+            @RenderBody()
+            <!-- /main content -->
+        </div>
+        <!-- /page content -->
+    </div>
+    <!-- /page container -->
+</body>
+
+@*Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")*@
+
+@RenderSection("scripts", required: false)
+</html>

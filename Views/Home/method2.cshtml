@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "method2";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@ViewBag.id</h1>
+<h2>@DateTime.Now.ToShortDateString()</h2>
+<h2>@DateTime.Now.ToShortDateString()</h2>
+@{
+    var date = DateTime.Now.ToShortDateString();
+    var message = "Hello World";
+
+}
+
+<h2>Today's date is: @date </h2>
+<h3>@message</h3>
+
+@for (int i = 0; i < 5; i++)
+{
+    @i.ToString()
+    <br />
+}
+
+@*@Html.ActionLink("Create New", "Create") would generate anchor tag <a href="/Student/Create">Create New</a>*@
+
+@Html.TextBox("my", null, new { @class = "form-control" })
+HTML Kodu
+<input class="form-control"
+       id="StudentName"
+       name="StudentName"
+       type="text"
+       value="" />
+
+@Html.TextArea("myTextArea", "This is value", new { @class = "form-control" })
+HTML Kodu
+<textarea class="form-control"
+          cols="20"
+          id="myTextArea"
+          name="myTextArea"
+          rows="2">This is value</textarea>
+
+@Html.CheckBox("isNewlyEnrolled", true)
+
+<input checked="checked"
+       id="isNewlyEnrolled"
+       name="isNewlyEnrolled"
+       type="checkbox"
+       value="true" />
